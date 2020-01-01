@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+branches=$(git branch --merged | grep -v '^  develop' | grep -v '^\*' | awk '{print($1)}' | grep -v '^master$\|^develop$')
+
+git branch -d $branches 2> /dev/null
