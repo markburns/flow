@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+ticket=$1
+
+git branch --all | grep $ticket | grep -i -o " \(.*\)" | grep -o "[^ ]*" | sed -e 's/^remotes\/origin\///' | uniq

@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+jira_id=${1:-$(flow-jira-current-ticket)}
+branch=$(flow-jira-matching-branch $jira_id)
+
+ci_status=$(ci $branch)
+response=$(flow-jira issue/$jira_id)
+jira_status=$(echo $response | jq '.fields.status.name')
+jira_summary=$(echo $response | jq '.fields.summary')
+
+github=$(hub pr list -L 1 -b develop -h $branch -f "%U       %S      %L%n")
+jira_details="$jira_summary\thttps://silkfred.atlassian.net/browse/$jira_id\tstatus: $jira_status\n"
+ci_details="CI: $ci_status\n"
+
+echo "JIRA: $jira_details\n"
+echo "-----------------------------------------"
+echo "GitHub:\t$github\n"
+echo "--------------------------------------------"
+echo $ci_details
+echo "--------------------------------------------"
+
+comments

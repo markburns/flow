@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+branch=$(flow-jira-matching-branch $1)
+
+if [ -n $branch ]; then
+  ci $branch
+else
+  echo "Failed to find branch $branch"
+fi

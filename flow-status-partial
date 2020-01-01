@@ -1,0 +1,52 @@
+#!/usr/bin/env zsh
+set -e
+jira_id=${1:-$(flow-jira-current-ticket)}
+branch=$(flow-jira-matching-branch $jira_id)
+ci_status=$(ci-status $branch | sed -e 's/"//g')
+
+case $ci_status in
+  failed)
+  ci_color="${RED}$(ci $branch)\n"
+  ;;
+  success|fixed)
+  ci_color="${GREEN}"
+  ;;
+  running)
+  ci_color="${ORANGE}"
+  ;;
+esac
+
+jira_response=$(flow-jira issue/$jira_id)
+jira_status=$(echo $jira_response | jq '.fields.status.name' | sed -e 's/"//g') 
+
+case $jira_status in
+  Review)
+  jira_status="${BLUE}$jira_status${NC}"
+  ;;
+  "Awaiting Release")
+  jira_status="${ORANGE}$jira_status${NC}"
+  ;;
+  "Released")
+  jira_status="${GREEN}$jira_status${NC}"
+  ;;
+esac
+
+jira_summary=$(echo $jira_response | jq '.fields.summary' | sed -e 's/"//g')
+github_summary=$(hub pr list -L 1 -b develop -h $branch -f "%U	%S	%L%n")
+
+case $github_summary in
+  *open*)
+  github_summary="${GREEN}$github_summary${NC}"
+  ;;
+  *merged*)
+  github_summary="${ORANGE}$github_summary${NC}"
+  ;;
+esac
+
+echo "${NC}---------------------------------------------------------------------------------------------------------------"
+echo "$jira_id $jira_status ${BLUE}https://silkfred.atlassian.net/browse/$jira_id${NC}"
+echo $jira_summary
+echo
+echo "$ci_color$ci_status${NC} $github_summary${NC}"
+echo "branch: $branch"
+echo

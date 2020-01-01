@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+ticket=${1:-all}
+
+if [ $ticket = all ]; then
+  echo 'all'
+  flow-jira issues/ '.'
+else
+  echo 'specfic'
+fi
