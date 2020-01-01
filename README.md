@@ -14,16 +14,16 @@ TICKET -> CODE -> REVIEW -> DEPLOY
 
 
 # STANDUP
-released          - anything to talk about?
-project release   - anything new?
-ready for release - any reason can't go out? who's releasing?
-UAT               - one by one
-In progress       - one by one
-Next up           - has anyone
-Batman            - who was it?  anything to talk about
-                    who is it today?
 
-Any work outside the board?
+* released          - anything to talk about?
+* project release   - anything new?
+* ready for release - any reason can't go out? who's releasing?
+* UAT               - one by one
+* In progress       - one by one
+* Next up           - has anyone
+* Batman            - who was it?  anything to talk about
+*                     who is it today?
+* Any work outside the board?
 
 
 # GET TICKET
