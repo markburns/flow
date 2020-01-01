@@ -1,0 +1,1 @@
+last-build '.[0].build_url' | sed -e 's/^"\|"$//g'

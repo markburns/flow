@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+selector=${1:-\.}
+branch=${2:-$(current-branch)}
+circle project/github/$(repo)/tree/$branch $selector
