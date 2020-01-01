@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 
-$ci=$2
+ci=$2
 ids=$(flow-jira-ticket-ids)
 
 if [[ 'extra' = $1 ]]; then
