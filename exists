@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+while read line
+do
+if [ -e $line ]
+then
+  echo $line
+fi
+done < "${1:-/dev/stdin}"
+
+
