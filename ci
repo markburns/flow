@@ -31,7 +31,7 @@ fi
 setopt +o nomatch
 
 echo "Last build status: ${RED}$STATUS${NC}. $BUILD_URL"
-echo "Fetching artifacts metainfo"
+# echo "Fetching artifacts metainfo"
 
 ASSET_URLS=(${(ps:\n:)"$(circle $ARTIFACTS_PATH '.[].url' )"})
 
@@ -43,17 +43,15 @@ set +x
 num_urls=$ASSET_URLS[(I)$ASSET_URLS[-1]]
 
 if [ -z $num_urls ]; then
-  echo -en "\r\033[KNo artifacts found\n"
+  echo -en "${RED}No artifacts found\n"
   echo "circle project/github/$REPO/tree/$branch '.'"
   exit 1
 else
-  echo -en "\rDownloading $num_urls artifacts\n"
 fi
 
 build_asset_path=tmp/build-assets/$BUILD_NUM/
 
 if [ -e $build_asset_path ]; then
-  echo 'already fetched and cached assets'
 else
   mkdir -p $build_asset_path
 
