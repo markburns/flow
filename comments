@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+sha=${1:-"HEAD"}
+
+comments-for-sha "$sha" || comments-for-sha "$sha^" || comments-for-sha "$sha^^^" || comments-for-sha "$sha^^^^"

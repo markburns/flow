@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+sha=${1:HEAD}
+get-github-pr-review-comments --repo $(repo) --projectRoot .  `git rev-parse $sha` | grep -v "^No comments$"
