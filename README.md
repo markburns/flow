@@ -1,6 +1,17 @@
 # Workflow
 
------------ STANDUP
+This README roughly defines the current workflow for getting from ideas into
+production for a specific company.
+
+As such it will act as a high level initial design document for a suite of CLI
+utilititis to make this process less fiddly.
+
+```
+TICKET -> CODE -> REVIEW -> DEPLOY
+```
+
+
+# STANDUP
 released          - anything to talk about?
 project release   - anything new?
 ready for release - any reason can't go out? who's releasing?
@@ -13,7 +24,7 @@ Batman            - who was it?  anything to talk about
 Any work outside the board?
 
 
------------ GET TICKET
+# GET TICKET
 00. refine tickets
 01. choose ticket                       (flow-next-ticket)
 
@@ -27,7 +38,7 @@ no tickets in progress. Look for one with `flow-next-ticket`
 04. checkout a branch with jira-id-slugified-title  |
 05. display jira description and link to ticket     -
 
------------ WRITE CODE
+# WRITE CODE
 05. develop
  * a. write tests
  * b. run tests      (spring_parallel_matching)
@@ -56,7 +67,7 @@ flow-status TECH-845
   TECH-845 Progress Running "do something else"  https://github.com/...   https://....
 ```
 
------------ REVIEW
+# REVIEW
 06. push code to github                                                - use hub pull-request and JIRA title/ticket
 07. request review on slack, include JIRA ticket id and github PR link |
 08. mark jira ticket as Review                                         |- (flow-review-start)
@@ -70,7 +81,7 @@ flow-status TECH-845
 14. merge into develop                                                 |- (flow-merge)
 15. mark in JIRA as UAT or awaiting release                            -
 
------------ RELEASE
+# DEPLOY
 16. announce on slack release channel                                  |-(flow-release-start SHA/PR/JIRA)
 18. wait to see if any objection
 
