@@ -1,0 +1,1 @@
+spring parallel_rspec spec/$1*spec.rb

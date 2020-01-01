@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+ls spec/**/*_spec.rb | grep $1 | xargs zeus rspec

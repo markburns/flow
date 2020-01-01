@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+show-changed-files | directory-from-file | sort | uniq
