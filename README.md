@@ -1,7 +1,9 @@
-# Workflow
+# Flow
+
+![https://imgur.com/JJa4pwI](https://imgur.com/JJa4pwI)
 
 This README roughly defines the current workflow for getting from ideas into
-production for a specific company.
+production for a specific client of mine.
 
 As such it will act as a high level initial design document for a suite of CLI
 utilititis to make this process less fiddly.
