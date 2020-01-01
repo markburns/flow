@@ -1,12 +1,17 @@
 #!/usr/bin/env zsh
 set -e
+display_ci=$2
 jira_id=${1:-$(flow-jira-current-ticket)}
 branch=$(flow-jira-matching-branch $jira_id)
 ci_status=$(ci-status $branch | sed -e 's/"//g')
 
 case $ci_status in
   failed)
-  ci_color="${RED}$(ci $branch)\n"
+  if [[ $display_ci ]]; then
+    ci_color="${RED}$(ci $branch)\n"
+  else
+    ci_color=$RED
+  fi
   ;;
   success|fixed)
   ci_color="${GREEN}"
