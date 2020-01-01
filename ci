@@ -1,0 +1,87 @@
+#!/usr/bin/env zsh
+
+branch=${1:-$(current-branch)}
+BUILD_NUM=$(last-build-number $branch)
+REPO=$(repo)
+ARTIFACTS_PATH="project/github/$REPO/$BUILD_NUM/artifacts"
+STATUS=$(ci-status $branch)
+BUILD_URL=https://circleci.com/gh/$REPO/$BUILD_NUM
+
+if [ '"running"' = $STATUS ]; then
+  >&2 echo "${BLUE}Running: $BUILD_URL${NC}"
+  exit -1
+elif [ '"not_running"' = $STATUS ]; then
+  >&2 echo "${GREY}Not running: $BUILD_URL${NC}"
+  exit -1
+elif [ '"success"' = $STATUS ]; then
+  echo "${GREEN}OK${NC}"
+  exit 0
+elif [ '"canceled"' = $STATUS ]; then
+  >&2 echo "${GREY}Cancelled${NC}"
+  exit -2
+elif [ '"not_run"' = $STATUS ]; then
+  echo "${GREY}Not run${NC}"
+  exit -3
+elif [ '"fixed"' = $STATUS ]; then
+  echo $BUILD_URL
+  echo "${GREEN}Fixed${NC}"
+  exit 0
+fi
+
+setopt +o nomatch
+
+echo "Last build status: ${RED}$STATUS${NC}. $BUILD_URL"
+echo "Fetching artifacts metainfo"
+
+ASSET_URLS=(${(ps:\n:)"$(circle $ARTIFACTS_PATH '.[].url' )"})
+
+slugify () {
+  echo "$1" | iconv -t 'ascii//TRANSLIT' | sed -r 's/[~\^]+//g' | sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r 's/^-+\|-+$//g' | tr 'A-Z' 'a-z' 
+}
+
+set +x
+num_urls=$ASSET_URLS[(I)$ASSET_URLS[-1]]
+
+if [ -z $num_urls ]; then
+  echo -en "\r\033[KNo artifacts found\n"
+  echo "circle project/github/$REPO/tree/$branch '.'"
+  exit 1
+else
+  echo -en "\rDownloading $num_urls artifacts\n"
+fi
+
+build_asset_path=tmp/build-assets/$BUILD_NUM/
+
+if [ -e $build_asset_path ]; then
+  echo 'already fetched and cached assets'
+else
+  mkdir -p $build_asset_path
+
+  for url in $ASSET_URLS; do
+    TRIMMED=$(sed -e 's/"//g' <<< $url)
+
+    xml=$(echo $url | grep "xml")
+    test_stats=$(echo $url | grep "test_stats")
+    echo -n "."
+
+    if [ -z $xml ]; then
+      if [ -z $test_stats ]; then
+        # echo 'not a test stat'
+        slugified_path=$(slugify $TRIMMED)
+        with_extension=$(echo $slugified_path | sed -e 's/\-\([^\-]\+\)$/\.\1/g')
+        OUTPUT_FILE="tmp/build-assets/$BUILD_NUM/$with_extension"
+        curl --silent "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
+      else
+        # echo 'test stat--skipping'
+      fi
+    else
+      WORKER_NUMBER=$(echo $TRIMMED | grep -o '\([0-9]\+\)/test_output'  | grep -o '\([0-9]\+\)')
+      OUTPUT_FILE=tmp/build-assets/$BUILD_NUM/results$WORKER_NUMBER.xml
+      curl --silent "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
+    fi
+  done
+fi
+
+echo "\n\`\`\`"
+xq '.' $build_asset_path/*.xml | jq '.testsuite.testcase[] | select(.failure) | .failure."#text"' | ruby -e 's = gets; s ? puts(eval(s)) : puts("No failures found")'
+echo "\`\`\`"

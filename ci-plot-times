@@ -1,0 +1,12 @@
+#!/usr/bin/gnuplot
+
+reset
+set terminal png
+set output "plot.png"
+set logscale x
+set xlabel "individual spec runtime (seconds)"
+set ylabel "total duration (minutes)"
+set grid
+set title "Where do we spend time in tests?"
+
+plot "tmp/build-assets/times-grouped" using 1:2 with boxes

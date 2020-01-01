@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+require 'byebug'
+
+lines=File.readlines(ARGV[0]).map(&:chomp)
+timings=lines.map(&:to_f)
+timings = timings.group_by{|i|
+  if i.zero?
+    i = Float::EPSILON
+  end
+
+  (Math.log10(i) / 10.0).round(1) * 10
+}
+
+File.open(ARGV[1], "w") do |f|
+  timings.each do |power, results|
+    digits = 10 ** power
+
+    formatted = "%2f" % digits
+
+    f << "#{formatted}\t#{results.sum / 60.0}\n"
+  end
+end

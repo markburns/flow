@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+cat tmp/build-assets/*.txt | less | awk '{print $5}' | grep -v run_time | sort -n  > tmp/build-assets/times
+ci-plot-times-process tmp/build-assets/times tmp/build-assets/times-grouped
+ci-plot-times
