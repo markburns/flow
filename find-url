@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+search_path=${1:-\.}
+ag "$(url-regex)" $search_path
