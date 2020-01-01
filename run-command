@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "\$@:     $@" >> /home/mark/.command-launcher.log
+
+xdotool keyup Control
+
+for arg in "$@"
+do
+  xdotool type --window tilix --delay 0 "$arg"
+  xdotool key space
+done
+xdotool key Return
