@@ -1,26 +1,25 @@
 #!/usr/bin/env zsh
 
 
+$ci=$2
+ids=$(flow-jira-ticket-ids)
 
-ids=${1:-$(flow-jira-ticket-ids)}
+if [[ 'extra' = $1 ]]; then
+  echo
+  echo '---------------'
+  echo "Branches without JIRA tickets"
+  git branch | grep -v $ids | grep -v "develop\|master"
+  echo '---------------'
+  echo "Other Open Pull Requests"
+  echo
 
-echo
-echo '---------------'
-echo "Branches without JIRA tickets"
-git branch | grep -v $ids | grep -v "develop\|master"
-echo '---------------'
-echo "Other Open Pull Requests"
-echo
+  hub pr list -f '%U	%S    %id     %au     %t              %H%n' | grep markburns | grep -v "$ids"
+  echo
+fi
 
-hub pr list -f '%U	%S    %id     %au     %t              %H%n' | grep markburns | grep -v "$ids"
-echo
-rm -rf /tmp/jira-tickets
-touch /tmp/jira-tickets
-
-echo "ID\tCI\tJira status\tJira URL\tDescription\tPR\tPR status" >> /tmp/jira-tickets
 ids_array=("${(f)ids}")
 
 for id in $ids_array; do
-  flow-status-partial $id
+  flow-status-partial $id $ci
 done
 
