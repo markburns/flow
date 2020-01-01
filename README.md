@@ -1,6 +1,6 @@
 # Flow
 
-![https://imgur.com/JJa4pwI](https://imgur.com/JJa4pwI)
+![screenshot](https://imgur.com/JJa4pwI.png)
 
 This README roughly defines the current workflow for getting from ideas into
 production for a specific client of mine.
