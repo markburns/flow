@@ -8,6 +8,35 @@ production for a specific client of mine.
 As such it will act as a high level initial design document for a suite of CLI
 utilititis to make this process less fiddly.
 
+## Dependencies
+
+This project is pre-alpha. I'm gradually adding minor tweaks each day that make
+my developer day more enjoyable and productive.
+I currently work on Ubuntu in Tilix as my terminal and gvim as my text editor.
+
+I'm happy to try
+* make it more text editor agnostic
+* more terminal agnostic
+* more OS agnostic
+* remove dependencies
+
+Initial known dependencies. (There may be more I haven't realised just yet)
+
+* hub
+* httpie
+* bash
+* zsh
+* git
+* get-github-pr-review-comments
+
+Also there's a dependency on opening gvim for my current client's project.
+I think my github handle is also in here at the moment.  Those are easy to sort out.
+
+I'm not in any rush to do these things, as the main goal is  making
+my life easier and better first, with it being re-usable elsewhere being
+a secondary goal.
+
+
 ```
 TICKET -> CODE -> REVIEW -> DEPLOY
 ```
