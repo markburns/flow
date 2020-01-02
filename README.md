@@ -22,7 +22,7 @@ ci-status [branch] # fetch only the CI status
 clean-branches # delete branches that are up to date with the current branch and not named master or develop
 kb # open the kanban board in firefox
 open-ci # open Circle for the current branch's PR
-spring-parallel-matching
+spring-parallel-matching <glob>
 ```
 
 ![screenshot](https://imgur.com/JJa4pwI.png)
