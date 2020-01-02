@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+url_path=$1
+selector=${2:-'.'}
+
+flow-jira /rest/api/2/$url_path $selector
