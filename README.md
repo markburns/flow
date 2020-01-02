@@ -16,6 +16,18 @@ Set up Tilix like this for useful actions when control clicking to open links
 
 N.B. similar set up should be possible for iTerm on Mac OS with Command click
 
+Add environment variables GH_TOKEN, JIRA_USERNAME, JIRA_TOKEN, JIRA_SUBDOMAIN.
+Get github token here: https://github.com/settings/tokens
+JIRA token here: https://id.atlassian.com/manage/api-tokens
+
+# Usage
+```
+flow-status # shows status of your local branches including JIRA ticket, GitHub and CI status
+flow-status verbose # as above
+
+
+```
+
 ## Dependencies
 
 This project is pre-alpha. I'm gradually adding minor tweaks each day that make
