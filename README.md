@@ -21,6 +21,9 @@ Get github token here: https://github.com/settings/tokens
 JIRA token here: https://id.atlassian.com/manage/api-tokens
 
 # Usage
+prefix your branch names with the JIRA ticket ID. E.g.`ASDF-123-some-jira-ticket-title`
+N.B. this will be automatic in the future with unification of JIRA ticket titles, PR titles and branch names (or there path/URL friendly slugified equivalents)
+
 ```
 flow-status # shows status of your local branches including JIRA ticket, GitHub and CI status
 flow-status verbose # as above
