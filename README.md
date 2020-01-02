@@ -17,11 +17,19 @@ N.B. this will be automatic in the future with unification of JIRA ticket titles
 flow-status # shows status of your local branches including JIRA ticket, GitHub and CI status
 flow-status verbose # as above but includes information on local branches and PRs that don't match JIRA tickets
 flow-status verbose ci # as above but fetches failure info from circle
+
 ci  [branch] # fetch status and/or failures from CI
+
 ci-status [branch] # fetch only the CI status
+
+comments # fetch comments for current branch
+
 clean-branches # delete branches that are up to date with the current branch and not named master or develop
+
 kb # open the kanban board in firefox
+
 open-ci # open Circle for the current branch's PR
+
 spring-parallel-matching <glob>
 ```
 
