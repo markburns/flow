@@ -8,9 +8,74 @@ production for a specific client of mine.
 As such it will act as a high level initial design document for a suite of CLI
 utilititis to make this process less fiddly.
 
+# Usage
+Follow the setup instructions below.
+prefix your branch names with the JIRA ticket ID. E.g.`ASDF-123-some-jira-ticket-title`
+N.B. this will be automatic in the future with unification of JIRA ticket titles, PR titles and branch names (or their path/URL friendly slugified equivalents)
+
+
+```
+flow-status # shows status of your local branches including JIRA ticket, GitHub and CI status
+flow-status verbose # as above but includes information on local branches and PRs that don't match JIRA tickets
+flow-status verbose ci # as above but fetches failure info from circle
+ci  [branch] # fetch status and/or failures from CI
+ci-status [branch] # fetch only the CI status
+clean-branches # delete branches that are up to date with the current branch and not named master or develop
+kb # open the kanban board in firefox
+open-ci # open Circle for the current branch's PR
+spring-parallel-matching
+```
+
+## Tilix commands
+By commands we mean, hold down <CTRL> and click the highlighted link given that you've set up Tilix as defined lower down.
+This should be extensible to work in iTerm too, and I'd like to find out how iTerm/Tilix config is persisted and ideally manage it from this repo. At the moment it's just a case of manually editing the config.
+
+```
+switch branch [matches on `branch: <branch_name>`]
+open in gvim [matches on relative URLs in project, full paths, and both with or without line numbers]
+open URL [matches on any URL and defaults to opening in firefox]
+run spec in spring [matches on rspec output for lines beginning with `rspec ./spec/...`]
+```
+
+
 # Setup
 Clone this repo and add it to your path.
 
+## Dependencies
+
+This project is pre-alpha. I'm gradually adding minor tweaks each day that make
+my developer day more enjoyable and productive.
+I currently work on Ubuntu in Tilix as my terminal and gvim as my text editor.
+
+I'm happy to try
+* make it more text editor agnostic
+* more terminal agnostic
+* more OS agnostic
+* remove dependencies
+
+Initial known dependencies. (There may be more I haven't realised just yet)
+
+* hub
+* httpie
+* bash
+* zsh
+* git
+* get-github-pr-review-comments
+
+Also there's a dependency on opening gvim for my current client's project.
+I think my github handle is also in here at the moment.  Those are easy to sort out.
+
+
+## Environment variables
+Add environment variables GH_TOKEN, JIRA_USERNAME, JIRA_TOKEN, JIRA_SUBDOMAIN.
+Get github token here: https://github.com/settings/tokens
+JIRA token here: https://id.atlassian.com/manage/api-tokens
+I'm not in any rush to do these things, as the main goal is  making
+my life easier and better first, with it being re-usable elsewhere being
+a secondary goal.
+
+
+## Tilix config
 Set up Tilix like this for useful actions when control clicking to open links
 ![tilix](https://i.imgur.com/gf1erMh.png)
 
@@ -52,66 +117,7 @@ git branch switching:
 
 N.B. similar set up should be possible for iTerm on Mac OS with Command click
 
-Add environment variables GH_TOKEN, JIRA_USERNAME, JIRA_TOKEN, JIRA_SUBDOMAIN.
-Get github token here: https://github.com/settings/tokens
-JIRA token here: https://id.atlassian.com/manage/api-tokens
 
-# Usage
-prefix your branch names with the JIRA ticket ID. E.g.`ASDF-123-some-jira-ticket-title`
-N.B. this will be automatic in the future with unification of JIRA ticket titles, PR titles and branch names (or their path/URL friendly slugified equivalents)
-
-```
-flow-status # shows status of your local branches including JIRA ticket, GitHub and CI status
-flow-status verbose # as above but includes information on local branches and PRs that don't match JIRA tickets
-flow-status verbose ci # as above but fetches failure info from circle
-ci  [branch] # fetch status and/or failures from CI
-ci-status [branch] # fetch only the CI status
-clean-branches # delete branches that are up to date with the current branch and not named master or develop
-kb # open the kanban board in firefox
-open-ci # open Circle for the current branch's PR
-spring-parallel-matching
-```
-
-## Tilix commands
-By commands we mean, hold down <CTRL> and click the highlighted link given that you've set up Tilix as defined lower down.
-This should be extensible to work in iTerm too, and I'd like to find out how iTerm/Tilix config is persisted and ideally manage it from this repo. At the moment it's just a case of manually editing the config.
-
-```
-switch branch [matches on `branch: <branch_name>`]
-open in gvim [matches on relative URLs in project, full paths, and both with or without line numbers]
-open URL [matches on any URL and defaults to opening in firefox]
-run spec in spring [matches on rspec output for lines beginning with `rspec ./spec/...`]
-```
-
-
-
-## Dependencies
-
-This project is pre-alpha. I'm gradually adding minor tweaks each day that make
-my developer day more enjoyable and productive.
-I currently work on Ubuntu in Tilix as my terminal and gvim as my text editor.
-
-I'm happy to try
-* make it more text editor agnostic
-* more terminal agnostic
-* more OS agnostic
-* remove dependencies
-
-Initial known dependencies. (There may be more I haven't realised just yet)
-
-* hub
-* httpie
-* bash
-* zsh
-* git
-* get-github-pr-review-comments
-
-Also there's a dependency on opening gvim for my current client's project.
-I think my github handle is also in here at the moment.  Those are easy to sort out.
-
-I'm not in any rush to do these things, as the main goal is  making
-my life easier and better first, with it being re-usable elsewhere being
-a secondary goal.
 
 # Parallel RSpec
 I currently have a 16 core machine. By running parallel_tests with glob matching I can quickly run all the most likely relevant tests for a specific feature.
