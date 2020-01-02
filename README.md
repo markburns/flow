@@ -14,6 +14,42 @@ Clone this repo and add it to your path.
 Set up Tilix like this for useful actions when control clicking to open links
 ![tilix](https://i.imgur.com/gf1erMh.png)
 
+config in text format:
+```
+launch firefox:
+  firefox $0
+  ((http[s]?):\/)\/([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(#[\w\-]+)?
+
+run single spec in spring:
+  run-command spring rspec $0 $1 $2 $3 $4
+  (rspec (([\.]\/[a-z][a-z0-9_\.\/\-]+):(\d+)))
+
+gvim:
+  relative:
+    launch-gvim 'relative' $0 $1 $2 $3
+    (([\.]\/[a-z][a-z0-9_\.\/\-]+):(\d+))
+
+    launch-gvim 'relative-no-line' $0 $1 $2 $3
+    (([\.]\/[a-z][a-z0-9_\.\/\-]+))
+
+    launch-gvim 'relative-no-dot' $0 $1 $2 $3
+    (([a-z][a-z0-9_\.\/\-]+):(\d+))
+
+    launch-gvim 'relative-no-dot-no-line' $0 $1 $2 $3
+    (([a-z][a-z0-9_\.\/\-]+))
+
+    launch-gvim 'full' $0 $1 $2 $3
+    ((\/[a-z][a-z0-9_\.\/\-]+):(\d+))
+
+    launch-gvim 'full-no-line' $0 $1 $2 $3
+    ((\/[a-z][a-z0-9_\.\/\-]+))
+
+git branch switching:
+  run-command git checkout $2
+  (branch: ([a-z]+\-[0-9]+\-[a-z\-]+))
+```
+
+
 N.B. similar set up should be possible for iTerm on Mac OS with Command click
 
 Add environment variables GH_TOKEN, JIRA_USERNAME, JIRA_TOKEN, JIRA_SUBDOMAIN.
