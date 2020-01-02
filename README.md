@@ -8,6 +8,14 @@ production for a specific client of mine.
 As such it will act as a high level initial design document for a suite of CLI
 utilititis to make this process less fiddly.
 
+# Setup
+Clone this repo and add it to your path.
+
+Set up Tilix like this for useful actions when control clicking to open links
+![tilix](https://i.imgur.com/gf1erMh.png)
+
+N.B. similar set up should be possible for iTerm on Mac OS with Command click
+
 ## Dependencies
 
 This project is pre-alpha. I'm gradually adding minor tweaks each day that make
