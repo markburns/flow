@@ -26,10 +26,26 @@ N.B. this will be automatic in the future with unification of JIRA ticket titles
 
 ```
 flow-status # shows status of your local branches including JIRA ticket, GitHub and CI status
-flow-status verbose # as above
+flow-status verbose # as above but includes information on local branches and PRs that don't match JIRA tickets
+flow-status verbose ci # as above but fetches failure info from circle
+ci  [branch] # fetch status and/or failures from CI
+ci-status [branch] # fetch only the CI status
+clean-branches # delete branches that are up to date with the current branch and not named master or develop
+kb # open the kanban board in firefox
+open-ci # open Circle for the current branch's PR
+```
 
+## Tilix commands
+By commands we mean, hold down <CTRL> and click the highlighted link given that you've set up Tilix as defined lower down.
+This should be extensible to work in iTerm too, and I'd like to find out how iTerm/Tilix config is persisted and ideally manage it from this repo. At the moment it's just a case of manually editing the config.
 
 ```
+switch branch [matches on `branch: <branch_name>`]
+open in gvim [matches on relative URLs in project, full paths, and both with or without line numbers]
+open URL [matches on any URL and defaults to opening in firefox]
+```
+
+
 
 ## Dependencies
 
@@ -59,6 +75,10 @@ I'm not in any rush to do these things, as the main goal is  making
 my life easier and better first, with it being re-usable elsewhere being
 a secondary goal.
 
+
+# Current workflow description
+The following section is very specific to our workflow at the moment.
+I'll be using this as a guideline to identify and remove pain points.
 
 ```
 TICKET -> CODE -> REVIEW -> DEPLOY
