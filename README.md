@@ -33,6 +33,7 @@ ci-status [branch] # fetch only the CI status
 clean-branches # delete branches that are up to date with the current branch and not named master or develop
 kb # open the kanban board in firefox
 open-ci # open Circle for the current branch's PR
+spring-parallel-matching
 ```
 
 ## Tilix commands
@@ -43,6 +44,7 @@ This should be extensible to work in iTerm too, and I'd like to find out how iTe
 switch branch [matches on `branch: <branch_name>`]
 open in gvim [matches on relative URLs in project, full paths, and both with or without line numbers]
 open URL [matches on any URL and defaults to opening in firefox]
+run spec in spring [matches on rspec output for lines beginning with `rspec ./spec/...`]
 ```
 
 
@@ -75,6 +77,104 @@ I'm not in any rush to do these things, as the main goal is  making
 my life easier and better first, with it being re-usable elsewhere being
 a secondary goal.
 
+# Parallel RSpec
+I currently have a 16 core machine. By running parallel_tests with glob matching I can quickly run all the most likely relevant tests for a specific feature.
+
+Example
+```
+ specs-parallel-matching '*/integrations/shopify/'
+Running via Spring preloader in process 21716
+14 processes for 14 specs, ~ 1 specs per process
+Running via Spring preloader in process 21766
+Running via Spring preloader in process 21769
+Running via Spring preloader in process 21772
+Running via Spring preloader in process 21775
+Running via Spring preloader in process 21778
+Running via Spring preloader in process 21781
+Running via Spring preloader in process 21784
+Running via Spring preloader in process 21787
+Running via Spring preloader in process 21790
+Running via Spring preloader in process 21793
+Running via Spring preloader in process 21796
+Running via Spring preloader in process 21799
+Running via Spring preloader in process 21802
+Running via Spring preloader in process 21805
+..............
+
+Finished in 1.6 seconds (files took 0.99127 seconds to load)
+2 examples, 0 failures
+
+......
+
+Finished in 1.93 seconds (files took 1.23 seconds to load)
+3 examples, 0 failures
+
+....
+
+Finished in 1.91 seconds (files took 1.03 seconds to load)
+3 examples, 0 failures
+
+..............
+
+Finished in 2.53 seconds (files took 1.34 seconds to load)
+4 examples, 0 failures
+
+...............
+
+Finished in 2.04 seconds (files took 0.9734 seconds to load)
+4 examples, 0 failures
+
+..
+
+Finished in 3.06 seconds (files took 1.35 seconds to load)
+11 examples, 0 failures
+
+............
+
+Finished in 3.38 seconds (files took 1.31 seconds to load)
+13 examples, 0 failures
+
+...
+
+Finished in 2.78 seconds (files took 0.90789 seconds to load)
+4 examples, 0 failures
+
+.
+
+Finished in 2.84 seconds (files took 1.03 seconds to load)
+8 examples, 0 failures
+
+..................
+
+Finished in 4.39 seconds (files took 1.04 seconds to load)
+11 examples, 0 failures
+
+.................
+
+Finished in 5.66 seconds (files took 0.80507 seconds to load)
+5 examples, 0 failures
+
+.....
+
+Finished in 6.03 seconds (files took 1.01 seconds to load)
+6 examples, 0 failures
+
+....
+
+Finished in 6.29 seconds (files took 0.83598 seconds to load)
+38 examples, 0 failures
+
+.....
+
+Finished in 9.58 seconds (files took 1.22 seconds to load)
+8 examples, 0 failures
+
+
+120 examples, 0 failures
+
+Took 12 seconds
+
+```
 
 # Current workflow description
 The following section is very specific to our workflow at the moment.
