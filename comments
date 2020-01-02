@@ -1,4 +1,12 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 sha=${1:-"HEAD"}
 
-comments-for-sha "$sha" || comments-for-sha "$sha^" || comments-for-sha "$sha^^^" || comments-for-sha "$sha^^^^"
+result=$(comments-for-sha "$sha" || comments-for-sha "$sha^" || comments-for-sha "$sha^^^" || comments-for-sha "$sha^^^^")
+
+lines=("${(f)result}")
+for line in $lines
+do
+  esc=$(printf '\033[')
+  echo $line | sed -e "s/^@ \(.*\)/${esc}$BLUE_VALUE\1${esc}${NC_VALUE}\n/" \
+             | sed -e "s/^★ \(.*\)/${esc}$GREEN_VALUE\1${esc}${NC_VALUE}\n/"
+done
