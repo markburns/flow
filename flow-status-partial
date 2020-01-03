@@ -34,6 +34,12 @@ case $jira_status in
   "Released")
   jira_status="${GREEN}$jira_status${NC}"
   ;;
+  "In Progress")
+  jira_status="${LIGHT_BLUE}$jira_status${NC}"
+  ;;
+  "Blocked")
+  jira_status="${RED}$jira_status${NC}"
+  ;;
 esac
 
 jira_summary=$(echo $jira_response | jq '.fields.summary' | sed -e 's/"//g')
