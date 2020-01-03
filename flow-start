@@ -2,9 +2,46 @@
 
 ticket=${1:-all}
 
+transition_jira_ticket(){
+  body="transition:={\"id\":\"$2\"}"
+  flow-jira-request POST "rest/api/3/issue/$1//transitions?expand=transitions.fields" $body
+}
+
 if [ $ticket = all ]; then
   echo 'all'
   flow-jira issues/ '.'
 else
-  echo 'specfic'
+  response=$(flow-jira-rest-2 issue/$ticket)
+  title=$(echo $response  | jq '.fields | .summary' | xargs slugify)
+  branch="$ticket-$title"
+  echo "create new branch $branch"
+  git fetch && git checkout develop && git reset origin/develop > /dev/null
+  git checkout -b $branch || git checkout $branch
+
+  echo '-----------------'
+  echo https://$JIRA_SUBDOMAIN.atlassian.net/browse/$ticket
+  echo $response  | jq '.fields | .description'
+
+  jira_username_only=$(echo $JIRA_USERNAME | sed -e 's/\@.*//')
+
+  body="name=$jira_username_only"
+  flow-jira-request PUT "rest/api/3/issue/$ticket/assignee" $body
+
+  # to get the id of the specific JIRA status transition
+  # flow-jira-request GET "/rest/api/3/issue/TECH-819/transitions?expand=transitions.fields" | jq '.transitions |  map(select(.name | match("Review";"i"))) | map(.id)'
+  # "131"
+  # curl -D- -u <USER>:<PASS> -X POST --data '{"transition":{"id":"<TRANSITION_ID>"}}' -H "Content-Type: application/json" <JIRA_URL>:<JIRA_PORT>/rest/api/latest/issue/<JIRA_ISSUE>/transitions?expand=transitions.fields
+  # https://stackoverflow.com/questions/30809831/update-jira-ticket-status-using-rest-api
+  # review_status="131"
+
+  # flow-jira-request GET "/rest/api/3/issue/TECH-819/transitions?expand=transitions.fields" | jq '.transitions |  map(select(.name | match("In Progress";"i"))) | map(.id)'
+  # [
+  #   "91"
+  # ]
+
+  in_progress_status=91
+  # body="transition:={\"id\":\"$in_progress_status\"}"
+  # flow-jira-request POST "rest/api/3/issue/$ticket//transitions?expand=transitions.fields" $body
+
+  transition_jira_ticket $ticket $in_progress_status
 fi
