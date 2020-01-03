@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 main=${1:-master}
-git diff --name-only $(current-branch)  $(git merge-base $(current-branch) $main) | exists
+merge_base=$(git merge-base $(current-branch) $main)
+git diff --name-only $(current-branch) $merge_base | exists
