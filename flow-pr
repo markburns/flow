@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+branch=${1:-$(current-branch)}
+git push || git push --set-upstream origin $branch
+
+title=$(flow-jira-title)
+hub pull-request -b develop -h $branch -m $title

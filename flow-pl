@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-branch=${1:-$(current-branch)}
-hub pull-request -b $branch
