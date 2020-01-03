@@ -1,0 +1,37 @@
+#!/usr/bin/env zsh
+# usage
+# flow-jira-request VERB <url_path> <body>
+VERB=$1
+url_path=$2
+httpie_body=$3
+
+fetch(){
+  # http $VERB   --auth=$JIRA_USERNAME:$JIRA_TOKEN
+  http --auth=$JIRA_USERNAME:$JIRA_TOKEN $VERB https://$JIRA_SUBDOMAIN.atlassian.net/$url_path $httpie_body
+}
+
+result=$(fetch $url_path)
+
+
+ruby_code=$(<<-EOF
+# JIRA responses include new lines and other control characters
+# and jq doesn't like that
+
+a=gets
+
+CONTROL_CHARACTERS = ("\x00".."\x1f").to_a.join("|")
+REGEX= /#{CONTROL_CHARACTERS}/
+
+lines = []
+
+while a do
+  lines << a.gsub(REGEX, "")
+
+  a=gets
+end
+
+puts lines.join(" ")
+EOF
+)
+
+echo $result | ruby -e $ruby_code
