@@ -1,0 +1,18 @@
+# to get the id of the specific JIRA status transition
+# https://stackoverflow.com/questions/30809831/update-jira-ticket-status-using-rest-api
+# flow-jira-request GET "/rest/api/3/issue/TECH-819/transitions?expand=transitions.fields" | jq '.transitions |  map(select(.name | match("Review";"i"))) | map(.id)'
+# "131"
+# curl -D- -u <USER>:<PASS> -X POST --data '{"transition":{"id":"<TRANSITION_ID>"}}' -H "Content-Type: application/json" <JIRA_URL>:<JIRA_PORT>/rest/api/latest/issue/<JIRA_ISSUE>/transitions?expand=transitions.fields
+# review_status="131"
+
+# flow-jira-request GET "/rest/api/3/issue/TECH-819/transitions?expand=transitions.fields" | jq '.transitions |  map(select(.name | match("In Progress";"i"))) | map(.id)'
+# [
+#   "91"
+# ]
+
+in_progress="91"
+review="131"
+uat="151"
+next_up="101"
+groomed="71"
+to_be_groomed="141"
