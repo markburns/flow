@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+ticket=${1:-all}
+
+transition_jira_ticket(){
+  body="transition:={\"id\":\"$2\"}"
+  flow-jira-request POST "rest/api/3/issue/$1//transitions?expand=transitions.fields" $body
+}
+
+if [ $ticket = all ]; then
+  echo 'all'
+  flow-jira issues/ '.'
+  exit
+fi
+
+title=$(flow-jira-title $ticket)
+branch="$ticket-$title"
+
+echo "create new branch $branch"
+git fetch && git checkout develop && git reset origin/develop > /dev/null
+git checkout -b $branch || git checkout $branch
+
+echo '-----------------'
+echo https://$JIRA_SUBDOMAIN.atlassian.net/browse/$ticket
+echo $response  | jq '.fields | .description'
+
+
+flow-jira-assign $ticket
+
+source ./flow-jira-transitions
+
+transition_jira_ticket $ticket $in_progress_status

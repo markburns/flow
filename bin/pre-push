@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+if [ ! -e .base-branch ]; then
+  branch=master
+else
+  branch=$(cat .base-branch)
+fi
+set -o verbose
+
+show-changed-files $branch | grep "\.rb$"  | exists | xargs rubocop -a | grep "no offenses detected" || (echo "rubocop failed" && exit 1)

@@ -2,4 +2,5 @@
 
 ticket=${1:-$(flow-jira-current-ticket)}
 response=$(flow-jira-rest-2 issue/$ticket)
+
 echo $response  | jq '.fields | .summary' | sed -e 's/"//g'

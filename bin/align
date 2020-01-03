@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+rm -rf /tmp/to-align
+touch /tmp/to-align
+
+if [ -z "$1" ]; then
+  while read line
+    do
+     echo "$line" > /tmp/to-align
+  done < "/dev/stdin"
+else
+  cp $1 /tmp/to-align
+fi
+
+column -s "	" -t /tmp/to-align

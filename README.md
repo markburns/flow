@@ -48,7 +48,7 @@ run spec in spring [matches on rspec output for lines beginning with `rspec ./sp
 
 
 # Setup
-Clone this repo and add it to your path.
+Clone this repo and add the bin folder to your path.
 
 ## Dependencies
 

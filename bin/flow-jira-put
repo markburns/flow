@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# usage
+# flow-jira-put <url_path> <body>
+
+flow-jira-request PUT $url_path $body
