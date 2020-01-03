@@ -35,9 +35,7 @@ echo "Last build status: ${RED}$STATUS${NC}. $BUILD_URL"
 
 ASSET_URLS=(${(ps:\n:)"$(circle $ARTIFACTS_PATH '.[].url' )"})
 
-slugify () {
-  echo "$1" | iconv -t 'ascii//TRANSLIT' | sed -r 's/[~\^]+//g' | sed -r 's/[^a-zA-Z0-9]+/-/g' | sed -r 's/^-+\|-+$//g' | tr 'A-Z' 'a-z' 
-}
+
 
 set +x
 num_urls=$ASSET_URLS[(I)$ASSET_URLS[-1]]
