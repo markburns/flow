@@ -58,6 +58,6 @@ echo "${NC}---------------------------------------------------------------------
 echo "$jira_id $jira_status ${BLUE}https://silkfred.atlassian.net/browse/$jira_id${NC}"
 echo $jira_summary
 echo
-echo "$ci_color$ci_status${NC} $github_summary${NC}"
+echo "$ci_color$ci_status${NC} $(last-build-url $branch) $github_summary${NC}"
 echo "branch: $branch"
 echo
