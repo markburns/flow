@@ -78,6 +78,10 @@ else
   done
 fi
 
+
 echo "\n\`\`\`"
-xq '.' $build_asset_path/*.xml | jq '.testsuite.testcase[] | select(.failure) | .failure."#text"' | ruby -e 's = gets; s ? puts(eval(s)) : puts("No failures found")'
+echo $NC
+xq '.' $build_asset_path/*.xml | jq '.testsuite.testcase[] | select(.failure) | .failure."#text"' | ruby -e 'begin; s = gets; s ? puts(eval(s)) : puts("No failures found"); rescue => e; nil; end'
 echo "\`\`\`"
+
+cat $build_asset_path/*.xml | less | grep testcase | grep "<failure message" | grep -o "<failure message\=\"[^\"]\+" | grep -o '".*' | sort | uniq -c | sort -n -r | sed -e "s/\s\+\([0-9]\+\)\s\"/\\${RED}\1 times: /"
