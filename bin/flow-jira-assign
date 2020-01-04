@@ -2,8 +2,7 @@
 # usage
 # flow-jira-assign <ticket_id> [username] - defaults to first part of JIRA_USERNAME
 
+ticket=$1
 jira_username_only=${2:-$(echo $JIRA_USERNAME | sed -e 's/\@.*//')}
 body="name=$jira_username_only"
 flow-jira-put "rest/api/3/issue/$ticket/assignee" $body
-
-

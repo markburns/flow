@@ -2,4 +2,6 @@
 # usage
 # flow-jira-put <url_path> <body>
 
+url_path=$1
+body=$2
 flow-jira-request PUT $url_path $body

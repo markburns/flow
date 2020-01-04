@@ -9,12 +9,12 @@ if [ $ticket = all ]; then
   exit
 fi
 
-title=$(flow-jira-title $ticket)
+title=$(slugify $(flow-jira-title $ticket))
 branch="$ticket-$title"
 
 echo "create new branch $branch"
 git fetch && git checkout develop && git reset origin/develop > /dev/null
-git checkout -b $branch || git checkout $branch
+git checkout -b $branch 2> /dev/null || git checkout $branch
 
 echo '-----------------'
 echo https://$JIRA_SUBDOMAIN.atlassian.net/browse/$ticket
