@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+require 'commander'
+require 'highline'
+require 'active_support/all'
+require 'byebug'
+
+def flow_status
+  puts "Fetching status of #{ENV['JIRA_USERNAME']}'s JIRA tickets and PRs"
+  puts `flow-status`
+end
+
+def flow_assign
+  `flow-jira-assign`
+end
+
+def flow_ci
+  `flow-ci`
+end
+
+def flow_standup
+  result = `flow-standup`
+  sections = result.split("----------------------------------------------------------------------------------------------------")
+  sections.reject!(&:blank?)
+  index = 0
+  puts `clear`
+  puts sections[index]
+
+  while index < sections.length do
+    choose do |menu|
+      menu.default = "next"
+
+      menu.choice("next") do |menu|
+        index +=1
+        puts `clear`
+        puts sections[index.to_i]
+      end
+      menu.choice("previous") do |menu|
+        index -=1
+        puts `clear`
+        puts sections[index.to_i]
+      end
+    end
+  end
+end
+
+prompt = "What do you want to do?"
+choice = choose("Status", "Standup", "Assign ticket", "Check CI", "Exit")
+case choice
+when "Status"
+  flow_status
+when "Standup"
+  flow_standup
+when "Exit"
+  exit
+end
