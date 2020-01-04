@@ -1,0 +1,2 @@
+ticket=${1:-$(flow-jira-current-ticket)}
+firefox -new-tab https://silkfred.atlassian.net/browse/$ticket
