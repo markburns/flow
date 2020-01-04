@@ -17,7 +17,7 @@ N.B. this will be automatic in the future with unification of JIRA ticket titles
 flow-status # shows status of your local branches including JIRA ticket, GitHub and CI status
 flow-status verbose # as above but includes information on local branches and PRs that don't match JIRA tickets
 flow-status verbose ci # as above but fetches failure info from circle
-
+flow-jira-transition <jira_id> <status_name> # transition the ticket to the SCREAMING_SNAKE_CASE status name e.g. IN_PROGRESS, UAT, REVIEW
 ci  [branch] # fetch status and/or failures from CI
 
 ci-status [branch] # fetch only the CI status
@@ -30,7 +30,7 @@ kb # open the kanban board in firefox
 
 open-ci # open Circle for the current branch's PR
 
-spring-parallel-matching <glob>
+spring-parallel-matching <pattern> # run all specs where the full path name matches the pattern e.g. integrations/shopify
 ```
 
 ![screenshot](https://imgur.com/JJa4pwI.png)
@@ -44,6 +44,7 @@ switch branch [matches on `branch: <branch_name>`]
 open in gvim [matches on relative URLs in project, full paths, and both with or without line numbers]
 open URL [matches on any URL and defaults to opening in firefox]
 run spec in spring [matches on rspec output for lines beginning with `rspec ./spec/...`]
+git add file [matches on `modified:  <file_name>` i.e. the output from `git status`]
 ```
 
 
@@ -121,6 +122,10 @@ gvim:
 git branch switching:
   run-command git checkout $2
   (branch: ([a-z]+\-[0-9]+\-[a-z\-]+))
+
+git add:
+  run-command git add $2
+  (modified:\s+([a-z][a-z0-9_\.\/\-]+))
 ```
 
 
