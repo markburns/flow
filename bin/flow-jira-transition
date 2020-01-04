@@ -1,0 +1,37 @@
+#!/usr/bin/env zsh
+jira_ticket=$1
+jira_state=$2
+
+jira_id_from_status(){
+  # to get the id of the specific JIRA status transition
+  # https://stackoverflow.com/questions/30809831/update-jira-ticket-status-using-rest-api
+  # flow-jira-request GET "/rest/api/3/issue/TECH-819/transitions?expand=transitions.fields" | jq '.transitions |  map(select(.name | match("Review";"i"))) | map(.id)'
+  # "131"
+  # curl -D- -u <USER>:<PASS> -X POST --data '{"transition":{"id":"<TRANSITION_ID>"}}' -H "Content-Type: application/json" <JIRA_URL>:<JIRA_PORT>/rest/api/latest/issue/<JIRA_ISSUE>/transitions?expand=transitions.fields
+  # review_status="131"
+
+  # flow-jira-request GET "/rest/api/3/issue/TECH-819/transitions?expand=transitions.fields" | jq '.transitions |  map(select(.name | match("In Progress";"i"))) | map(.id)'
+  # [
+  #   "91"
+  # ]
+
+  JIRA_STATUS_IN_PROGRESS=91
+  JIRA_STATUS_REVIEW=131
+  JIRA_STATUS_UAT=151
+  JIRA_STATUS_NEXT_UP=101
+  JIRA_STATUS_GROOMED=71
+  JIRA_STATUS_TO_BE_GROOMED=141
+
+  jira_status_variable_name="\$JIRA_STATUS_$1"
+  v_name=$(echo $jira_status_variable_name)
+  new_jira_status=$(eval echo $v_name)
+  echo $new_jira_status
+}
+
+transition_jira_ticket(){
+  body="transition:={\"id\":\"$2\"}"
+  flow-jira-request POST "rest/api/3/issue/$1//transitions?expand=transitions.fields" $body
+}
+
+new_jira_status_id=$(jira_id_from_status $jira_state)
+transition_jira_ticket $jira_ticket $new_jira_status_id

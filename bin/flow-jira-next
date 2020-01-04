@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+flow-jira-board | \
+
+
+# curl $image_url | viu --width 64
