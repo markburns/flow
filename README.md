@@ -94,6 +94,10 @@ launch firefox:
   firefox $0
   ((http[s]?):\/)\/([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(#[\w\-]+)?
 
+launch jira:
+  open-jira $0
+  ([A-Z]{3,4}\-[0-9]{3,4})
+
 run single spec in spring:
   run-command spring rspec $0 $1 $2 $3 $4
   (rspec (([\.]\/[a-z][a-z0-9_\.\/\-]+):(\d+)))
@@ -125,6 +129,7 @@ git branch switching:
 git add:
   run-command git add $2
   (modified:\s+([a-z][a-z0-9_\.\/\-]+))
+
 ```
 
 
