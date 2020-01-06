@@ -70,6 +70,7 @@ Initial known dependencies. (There may be more I haven't realised just yet)
 * zsh
 * git
 * get-github-pr-review-comments
+* yadr 
 
 Also there's a dependency on opening gvim for my current client's project.
 I think my github handle is also in here at the moment.  Those are easy to sort out.
