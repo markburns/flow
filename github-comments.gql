@@ -1,0 +1,26 @@
+query{
+  repository(name:"<REPO_NAME>", owner:"<REPO_OWNER>"){
+    pullRequests(last:1, baseRefName: "<BASE_BRANCH>", headRefName: "<BRANCH>"){
+      edges{
+        node{
+          author{login}
+          reviews(last:10){
+            nodes{
+              author{login}
+              state
+              comments(last:10){
+                nodes{
+                  author{login}
+                  url
+                  isMinimized
+                  bodyHTML
+                  bodyText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

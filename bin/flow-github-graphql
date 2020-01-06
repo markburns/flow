@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+# usage flow-github-graphql <query-file> [base] [branch] [owner] [repo]
+
+base_branch=${2:-'develop'}
+branch=${3:-$(current-branch)}
+owner=${4:-$(repo-owner)}
+repo=${5:-$(repo-name)}
+
+query=$(cat $1 | \
+  sed -e "s/<BASE_BRANCH>/$base_branch/" | \
+  sed -e "s/<BRANCH>/$branch/" | \
+  sed -e "s/<REPO_OWNER>/$owner/" | \
+  sed -e "s/<REPO_NAME>/$repo/")
+
+# echo $query
+
+hub api --paginate graphql -f query=$query
