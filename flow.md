@@ -1,3 +1,4 @@
+```
 +--------------------+----------------------------+-------------------------------------+-----------------------+-----------------------+
 | JIRA               | local                      | github                              | circle                | Slack                 |
 | id, title , status | git branch, pushed status  | PR, title, branch, status, comments | build_number, status  | Review request status |
@@ -55,3 +56,4 @@
 | Deploy manager           | The deploy process has lots of steps, I'm going to keep         | flow-deploy                        |
 |                          | working on this                                                 |                                    |
 +--------------------------+-----------------------------------------------------------------+------------------------------------+
+```
