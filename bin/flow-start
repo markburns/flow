@@ -1,14 +1,6 @@
 #!/usr/bin/env zsh
 
-ticket=${1:-all}
-
-
-if [ $ticket = all ]; then
-  echo 'all'
-  flow-jira issues/ '.'
-  exit
-fi
-
+ticket=$1
 title=$(slugify $(flow-jira-title $ticket))
 branch="$ticket-$title"
 
@@ -23,6 +15,4 @@ echo $response  | jq '.fields | .description'
 
 flow-jira-assign $ticket
 
-source flow-jira-transitions
-
-transition_jira_ticket $ticket $JIRA_STATUS_IN_PROGRESS
+flow-jira-transition 'IN_PROGRESS' $ticket 
