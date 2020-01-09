@@ -1,14 +1,63 @@
-#!/usr/bin/env zsh
-# usage
-# flow-jira <url_path> <jq selector>
+#!/usr/bin/env ruby
 
-fetch(){
-  curl $2 --silent -u $JIRA_USERNAME:$JIRA_TOKEN -X GET -H "Content-Type: application/json" "https://$JIRA_SUBDOMAIN.atlassian.net/$1"
-}
+require 'byebug'
+require 'json'
+require 'active_support/all'
+require 'commander/import'
+require 'terminal-table'
 
-url_path=$1
-selector=${2:-'.'}
+program :name, 'flow-jira'
+program :version, '0.0.1'
+program :description, 'Take the pain out of JIRA'
 
-result=$(fetch $url_path)
+Ticket = Struct.new(:id, :who, :title, :epic) do
+  # slack links:
+  # <http://www.foo.com|This message *is* a link>
+  def slack_url
+    "<#{url}\|#{id}>"
+  end
 
-echo $result | flow-jira-cleanup-response | jq $selector 2> /dev/null || (echo $result && echo 'failed')
+  def url
+    "https://silkfred.atlassian.net/browse/#{id}"
+  end
+
+  def merged?
+    `git log`
+  end
+end
+
+def git_log
+  `git log`
+end
+command :next do |c|
+  c.syntax = 'flow-jira --status <STATUS>'
+  c.description = 'Choose your next JIRA ticket and create a correspondingly named github branch'
+  c.option '--status STRING', String, '"Next up" (default), "Awaiting Release", "UAT", "In Progress", "Released"'
+  c.option '--epic STRING', String, 'The name of the epic (matches on substrings)'
+  c.option '--slack BOOLEAN','Boolean', 'Format with URLs for slack'
+
+  c.action do |args, options|
+    options.default status: "Next up", epic: "", slack: false
+    command = "flow-jira-next #{options.epic.inspect} #{options.status.inspect}"
+
+    response=`#{command}`
+
+    begin
+      tickets = JSON.parse(response).map{|h| Ticket.new(*h.values_at("id", "who", "title", "epic")) }
+
+      rows = tickets.map{|t|
+        id = options.slack ? t.slack_url : t.id
+        [id, t.who, t.title, t.epic]
+      }
+      table = Terminal::Table.new(:headings => %w(id who title epic), :rows => rows)
+
+      puts table
+    rescue => e
+      # puts response
+      puts e
+
+    end
+  end
+
+  exit
+end
