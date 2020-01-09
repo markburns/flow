@@ -1,8 +1,8 @@
 #!/bin/bash
 echo "launched with:" >> /home/mark/.gvim-launcher.log
 echo "pwd: $(pwd)" >> /home/mark/.gvim-launcher.log
-echo "command: $0" >> /home/mark/.gvim-launcher.log
-echo "type:    $1" >> /home/mark/.gvim-launcher.log
+echo "command (\$0): $0" >> /home/mark/.gvim-launcher.log
+echo "type:   (\$1): $1" >> /home/mark/.gvim-launcher.log
 echo "\$2:     $2" >> /home/mark/.gvim-launcher.log
 echo "\$3:     $3" >> /home/mark/.gvim-launcher.log
 echo "\$4:     $4" >> /home/mark/.gvim-launcher.log
