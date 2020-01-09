@@ -1,9 +1,40 @@
 #!/usr/bin/env ruby
-require 'commander'
-require 'highline'
+require 'commander/import'
+require 'terminal-table'
 require 'active_support/all'
 require 'byebug'
 
+program :name, 'Flow'
+program :version, '0.0.1'
+program :description, 'Improve developer flow'
+
+# command :next do |c|
+#   c.syntax = 'flow next'
+#   c.description = 'Choose your next JIRA ticket and create a correspondingly named github branch'
+#   response=`flow-jira-next | flow-jira-cleanup-response | jq -s '.'`
+#   tickets = JSON.parse(response).map{|h| h.except('description', 'created', 'image', 'who')}
+#   table = Terminal::Table.new :headings => tickets.first.keys, :rows => tickets.map(&:values)
+#   puts table
+#   exit
+#   c.action do |args, options|
+#     tickets.each do |t|
+#       table = Terminal::Table.new :rows => rows
+#       say "#{t.id} #{t.title}"
+#     end
+#   end
+# 
+#   exit
+# end
+# 
+# command :standup do |c|
+#   c.syntax = 'flow standup'
+#   c.description = 'Run the standup'
+#   c.action do |args, options|
+#     `flow-standup`
+#   end
+# end
+# 
+# 
 def flow_status
   puts "Fetching status of #{ENV['JIRA_USERNAME']}'s JIRA tickets and PRs"
   puts `flow-status`
@@ -26,24 +57,24 @@ def flow_standup
   puts sections[index]
 
   while index < sections.length do
-    choose do |menu|
-      menu.default = "next"
-
-      menu.choice("next") do |menu|
-        index +=1
-        puts `clear`
-        puts sections[index.to_i]
-      end
-      menu.choice("previous") do |menu|
-        index -=1
-        puts `clear`
-        puts sections[index.to_i]
-      end
+    choice = choose("next step", "next", "previous", "quit")
+    case choice
+    when 'previous'
+      index -=1
+      puts `clear`
+      puts sections[index.to_i]
+    when 'quit'
+      exit
+    else
+      index +=1
+      puts `clear`
+      puts sections[index.to_i]
     end
   end
 end
 
 prompt = "What do you want to do?"
+
 choice = choose("Status", "Standup", "Assign ticket", "Check CI", "Exit")
 case choice
 when "Status"
