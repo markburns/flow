@@ -29,7 +29,6 @@ images = tickets.group_by{|t| t.image && t.image['16x16']}.keys.uniq
 images = images.each_with_object({}) do |url, result|
   if url
     file=image_file(url)
-    byebug if file[/http.*http/]
     unless File.exist?(file)
       `curl -L "#{url}" -o #{file}`
     end
