@@ -1,6 +1,12 @@
 #!/usr/bin/env zsh
 
-flow-jira-board | \
+epic=$1
+jira_status=$2
 
+if [ -z $epic ]; then
+  result=$(flow-jira-board $jira_status)
+else
+  result=$(flow-jira-board $jira_status |  jq ".[] | select(.epic) | select(.epic | match(\"$epic\";\"i\"))" | jq -ns 'reduce inputs as $in (null; . + $in)')
+fi
 
-# curl $image_url | viu --width 64
+printf '%s' $result 
