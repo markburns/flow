@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+require 'byebug'
+require 'json'
+require 'active_support/all'
+
+Ticket = Struct.new(:id, :who, :title)
+
+PullRequest = Struct.new(:url, :title) do
+  def ticket
+    title[/[a-z]{2,8}\-[0-9]{2,4}/i]&.upcase
+  end
+end
+
+Line = Struct.new(:ticket, :pull_request) do
+  def summary
+    [jira_id, github_url, github_title, jira_title, jira_user].join("\t")
+  end
+
+  def github_url
+    pull_request.url
+  end
+
+  def github_title
+    pull_request.title
+  end
+
+  def jira_id
+    ticket.id
+  end
+
+  def jira_user
+    ticket.who
+  end
+
+  def jira_title
+    ticket.title
+  end
+end
+merged=`flow-github-merged-prs-to-release`.split("\n")
+
+awaiting_release=JSON.parse(`flow-jira-next "" "Awaiting Release"`)
+awaiting_release = awaiting_release.map{|t| Ticket.new(*t.values_at("id", "who", "title"))}
+
+
+open_prs=`flow-github-open-prs`.split("\n")
+open_prs = open_prs.map{|s| first, *rest = s.split(" "); PullRequest.new(first, rest.join(" "))}
+
+lines = open_prs.map do |pr|
+  ticket = awaiting_release.find{|t| t.id == pr.ticket}
+  Line.new(ticket, pr)
+end
+
+still_open = lines.select{|l| l.ticket.present? }
+
+if still_open.any?
+  puts still_open.map(&:summary)
+  exit -1
+else
+  puts 'Good to go!'
+end

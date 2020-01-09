@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+from=${1:-'develop'}
+to=${2:-'master'}
+
+git log $from...$to | grep 'Merge pull request #' | grep -v 'from SilkFred/master' | grep -v 'from SilkFred/develop' | grep -o '#[0-9]\+' | grep -o '[0-9]\+'

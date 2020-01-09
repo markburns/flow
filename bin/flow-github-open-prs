@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+to=${1:-'develop'}
+hub pr list  -f '%U %t%n' -s open -b $to | grep -i "[a-z]\{2,8\}\-[0-9]\{2,4\}"
