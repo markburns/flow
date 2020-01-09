@@ -13,7 +13,6 @@ ignore=%w(
 -attachment
 -comment
 -components
--created
 -creator
 -customfield_10000
 -customfield_10001
@@ -83,18 +82,24 @@ ignore=%w(
 # assignee
 
 filter='.issues[] | .fields | {status: .status.name, title: .summary, epic: .epic.summary, who: .assignee.name, image: .assignee.avatarUrls[]}'
+statuses = ARGV
+
+if statuses.length.zero?
+  statuses=["Awaiting Release","Released","Blocked","In Progress","Review","UAT"]
+end
+
+statuses = statuses.map(&:inspect).join(", ").gsub('"', "'")
 
 # maxResults==50"
-jql="\"(fixVersion in unreleasedVersions() OR fixVersion is EMPTY) AND project in (TECH,BRND,CE,CAPP,FIN,MKT,SEO,STATSAPP,WL) AND issuetype in (Bug,Epic,Investigation,Story,Task,Sub-task) AND status in ('Awaiting Release','Released',Blocked,'In Progress',Review,UAT) ORDER BY Rank ASC\""
+jql="\"(fixVersion in unreleasedVersions() OR fixVersion is EMPTY) AND project in (TECH,BRND,CE,CAPP,FIN,MKT,SEO,STATSAPP,WL) AND issuetype in (Bug,Epic,Investigation,Story,Task,Sub-task) AND status in (#{statuses}) ORDER BY Rank ASC\""
 jql.gsub!(" ", "\\ ")
 jql.gsub!("(", '\(')
 jql.gsub!(")", '\)')
 jql.gsub!("'", "\\\\'")
 
 command="flow-jira-request GET /rest/agile/latest/board/16/issue fields==#{ignore} jql==#{jql}"
-puts `#{command} | \
-  jq '.issues[] | {status: .fields.status.name, who: .fields.assignee.name, title: .fields.summary, id: .key,  description: .fields.description, epic: .fields.epic.name,  image: .fields.assignee.avatarUrls}'  | \
+
+puts `#{command} |  flow-jira-cleanup-response | \
+  jq '.issues[] | {status: .fields.status.name, who: .fields.assignee.name, title: .fields.summary, id: .key,  description: .fields.description, epic: .fields.epic.name,  image: .fields.assignee.avatarUrls, created: .fields.created}' | \
   jq -ns 'reduce inputs as $in (null; . + $in)'
 `
-
-# curl $image_url | viu --width 64
