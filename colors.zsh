@@ -2,6 +2,8 @@ if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
+export BOLD_VALUE="1m"
+
 export BLACK_VALUE='0;30m'
 export RED_VALUE='0;31m'
 export DARK_GRAY_VALUE='1;30m'
@@ -21,6 +23,8 @@ export WHITE_VALUE='1;37m'
 export NC_VALUE='0m'
 
 esc=$(printf '\033[')
+
+export BOLD="\033${BOLD_VALUE}"
 export BLACK='\033[0;30m'
 export RED="${esc}${RED_VALUE}"
 export DARK_GRAY='\033[1;30m'
