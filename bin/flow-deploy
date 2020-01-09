@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+git checkout master
+git pull --rebase
+git reset --hard origin/master
+bundle exec cap production deploy BRANCH=master
+
+# announce on releases slack
+# wait for results of ticket checking
+# send email 'successful'
