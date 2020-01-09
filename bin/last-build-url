@@ -1,1 +1,3 @@
-last-build '.[0].build_url' | sed -e 's/^"\|"$//g'
+branch=${1:-$(current-branch)}
+
+last-build '.[0].build_url' $branch | sed -e 's/^"\|"$//g'
