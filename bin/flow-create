@@ -1,2 +1,2 @@
-#!/usr/bin/env bash
-curl --silent -u $JIRA_USERNAME:$JIRA_TOKEN -X GET -H "Content-Type: application/json" https://silkfred.atlassian.net/rest/api/2/issue/createmeta
+#!/usr/bin/env zsh
+flow-jira-request POST rest/api/2/issue/create
