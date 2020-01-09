@@ -31,11 +31,8 @@ fi
 setopt +o nomatch
 
 echo "Last build status: ${RED}$STATUS${NC}. $BUILD_URL"
-# echo "Fetching artifacts metainfo"
 
 ASSET_URLS=(${(ps:\n:)"$(circle $ARTIFACTS_PATH '.[].url' )"})
-
-
 
 set +x
 num_urls=$ASSET_URLS[(I)$ASSET_URLS[-1]]
