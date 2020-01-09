@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -e
-jira_id=${1:-$(flow-jira-current-ticket)}
 
+jira_id=${1:-$(flow-jira-current-ticket)}
 display_ci=$2
 branch=$(flow-jira-matching-branch $jira_id)
 
@@ -10,20 +10,32 @@ case $ci_status in
   failed)
   if [[ $display_ci ]]; then
     ci_color="${RED}$(ci $branch)\n"
+    ci_status=" $ci_status"
   else
     ci_color=$RED
+    ci_status=" $ci_status"
   fi
   ;;
   success|fixed)
   ci_color="${GREEN}"
+  ci_status=" $ci_status"
   ;;
   running)
   ci_color="${ORANGE}"
+  ci_status=" $ci_status"
+  ;;
+  null)
+  ci_color="${GREY}"
+  ci_status=" No branch on CI"
+  ;;
+  null|not_run)
+  ci_color="${GREY}"
+  ci_status=" Not run"
   ;;
 esac
 
 jira_response=$(flow-jira-rest-2 issue/$jira_id)
-jira_status=$(echo $jira_response | jq '.fields.status.name' | sed -e 's/"//g') 
+jira_status=$(printf "%s" $jira_response | jq '.fields.status.name' | sed -e 's/"//g') 
 
 case $jira_status in
   Review)
@@ -43,7 +55,7 @@ case $jira_status in
   ;;
 esac
 
-jira_summary=$(echo $jira_response | jq '.fields.summary' | sed -e 's/"//g')
+jira_summary=$(printf "%s" $jira_response | jq '.fields.summary' | sed -e 's/"//g')
 github_summary=$(hub pr list -L 1 -b develop -h $branch -f "%U	%S	%L%n")
 
 case $github_summary in
@@ -53,11 +65,14 @@ case $github_summary in
   *merged*)
   github_summary="${ORANGE}$github_summary${NC}"
   ;;
+  *null*)
+  github_summary="${GREY}No pull-request: create one with \`flow pr\`${NC}"
+  ;;
 esac
-
+ci_summary="$ci_color$(last-build-short-url $branch)$ci_status${NC}"
 github_summary=$(echo $github_summary | sed -e "s|https://github.com/.*/pull/|GH:|" )
 echo "${NC}---------------------------------------------------------------------------------------------------------------"
 echo "${BLUE}$jira_id${NC} [$jira_status] $jira_summary"
-echo "$ci_color$(last-build-short-url $branch) $ci_status${NC} $github_summary${NC}"
+echo "$ci_summary $github_summary${NC}"
 echo "branch: $branch"
 echo
