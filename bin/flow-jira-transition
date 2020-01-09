@@ -15,12 +15,13 @@ jira_id_from_status(){
   #   "91"
   # ]
 
-  JIRA_STATUS_IN_PROGRESS=91
-  JIRA_STATUS_REVIEW=131
-  JIRA_STATUS_UAT=151
-  JIRA_STATUS_NEXT_UP=101
-  JIRA_STATUS_GROOMED=71
-  JIRA_STATUS_TO_BE_GROOMED=141
+  JIRA_STATUS_IN_PROGRESS='91'
+  JIRA_STATUS_REVIEW='131'
+  JIRA_STATUS_UAT='151'
+  JIRA_STATUS_NEXT_UP='101'
+  JIRA_STATUS_GROOMED='71'
+  JIRA_STATUS_TO_BE_GROOMED='141'
+  JIRA_STATUS_AWAITING_RELEASE='11'
 
   jira_status_variable_name="\$JIRA_STATUS_$1"
   v_name=$(echo $jira_status_variable_name)
@@ -29,8 +30,7 @@ jira_id_from_status(){
 }
 
 transition_jira_ticket(){
-  body="transition:={\"id\":\"$2\"}"
-  flow-jira-request POST "rest/api/3/issue/$1//transitions?expand=transitions.fields" $body
+  flow-jira-request POST "rest/api/3/issue/$1/transitions?expand=transitions.fields" transition:="{\\\"id\\\":\\\"$2\\\"}"
 }
 
 new_jira_status_id=$(jira_id_from_status $jira_state)

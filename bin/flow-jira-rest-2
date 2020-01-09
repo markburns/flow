@@ -2,4 +2,4 @@
 url_path=$1
 selector=${2:-'.'}
 
-flow-jira /rest/api/2/$url_path $selector
+flow-jira-request GET /rest/api/2/$url_path | flow-jira-cleanup-response #| jq $selector
