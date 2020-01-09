@@ -1,10 +1,11 @@
 #!/usr/bin/env zsh
 set -e
-display_ci=$2
 jira_id=${1:-$(flow-jira-current-ticket)}
-branch=$(flow-jira-matching-branch $jira_id)
-ci_status=$(ci-status $branch | sed -e 's/"//g')
 
+display_ci=$2
+branch=$(flow-jira-matching-branch $jira_id)
+
+ci_status=$(ci-status $branch | sed -e 's/"//g')
 case $ci_status in
   failed)
   if [[ $display_ci ]]; then
@@ -54,10 +55,9 @@ case $github_summary in
   ;;
 esac
 
+github_summary=$(echo $github_summary | sed -e "s|https://github.com/.*/pull/|GH:|" )
 echo "${NC}---------------------------------------------------------------------------------------------------------------"
-echo "$jira_id $jira_status ${BLUE}https://silkfred.atlassian.net/browse/$jira_id${NC}"
-echo $jira_summary
-echo
-echo "$ci_color$ci_status${NC} $(last-build-url $branch) $github_summary${NC}"
+echo "${BLUE}$jira_id${NC} [$jira_status] $jira_summary"
+echo "$ci_color$(last-build-short-url $branch) $ci_status${NC} $github_summary${NC}"
 echo "branch: $branch"
 echo
