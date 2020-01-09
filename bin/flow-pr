@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 
 branch=${1:-$(current-branch)}
-git push || git push --set-upstream origin $branch
+base_branch=${2:-develop}
+
+git push --force-with-lease || git push --set-upstream origin $branch
 
 title=$(flow-jira-title)
-hub pull-request -b develop -h $branch -m $title
+id=$(flow-jira-current-ticket)
+title="[$id] $title"
+url=$(hub pull-request -b $base_branch -h $branch -m "$title")
+
+if [ $base_branch = master ]; then
+  echo "HOTFIX $title $url"
+else
+  echo $title $url
+fi
