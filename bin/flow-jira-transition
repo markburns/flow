@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
-jira_ticket=$1
-jira_state=$2
+jira_state=$1
+jira_ticket=${2:-$(flow-jira-current-ticket)}
 
 jira_id_from_status(){
   # to get the id of the specific JIRA status transition
