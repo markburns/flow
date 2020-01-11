@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+set -e
 
 ci=$2
 ids=$(flow-jira-ticket-ids)

@@ -35,7 +35,7 @@ case $ci_status in
 esac
 
 jira_response=$(flow-jira-rest-2 issue/$jira_id)
-jira_status=$(printf "%s" $jira_response | jq '.fields.status.name' | sed -e 's/"//g') 
+jira_status=$(printf "%s" $jira_response | jq '.fields.status.name' | sed -e 's/"//g')
 
 case $jira_status in
   Review)
