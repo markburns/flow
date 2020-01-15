@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+to=${1:-$(flow-tag-previous)}
+from=${2:-$(flow-tag-current)}
+
+git_log=$(git log $to...$from)
+pr_candidates=$(echo $git_log | grep "Merge pull" | grep -v hotfix)
+echo "Pull requests:"
+echo "---------------"
+prs=$(echo $pr_candidates | grep -o '#[0-9]\+' | grep -o '[0-9]\+' )
+echo $prs
+
+echo
+echo "Tickets:"
+echo "---------------"
+
+tickets=$(echo $pr_candidates | grep -o 'SilkFred.*' | grep -o '/.*' | grep -io "[a-z]\+\-[0-9]\+")
+echo $tickets
+
