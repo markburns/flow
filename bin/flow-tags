@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+tags=`git tag`.split("\n")
+
+semvers = tags.map do |tag|
+  tag = tag.gsub(/^v/, "")
+  Gem::Version.new(tag) rescue nil
+end.compact
+
+puts semvers.sort
