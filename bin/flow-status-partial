@@ -5,33 +5,32 @@ jira_id=${1:-$(flow-jira-current-ticket)}
 display_ci=$2
 branch=$(flow-jira-matching-branch $jira_id)
 
-ci_status=$(ci-status $branch | sed -e 's/"//g')
+ci_response=$(last-build '.' $branch)
+ci_status=$(printf "%s" $ci_response | jq '.[].status' | sed -e 's/"//g')
+ci_short_url=$(printf "%s" $ci_response | jq '.[0].build_url' | sed -e 's/^"\|"$//g' | sed 's|https://circleci.com/gh/SilkFred/SilkFred/|CI:|' | sed -e 's/null//')
+
 case $ci_status in
   failed)
-  if [[ $display_ci ]]; then
-    ci_color="${RED}$(ci $branch)\n"
-    ci_status=" $ci_status"
-  else
-    ci_color=$RED
-    ci_status=" $ci_status"
-  fi
-  ;;
+    if [[ $display_ci ]]; then
+      ci_color="${RED}$(ci $branch)\n"
+    else
+      ci_color=$RED
+    fi
+    ;;
   success|fixed)
-  ci_color="${GREEN}"
-  ci_status=" $ci_status"
-  ;;
+    ci_color="${GREEN}"
+    ;;
   running)
-  ci_color="${ORANGE}"
-  ci_status=" $ci_status"
-  ;;
+    ci_color="${ORANGE}"
+    ;;
   null)
-  ci_color="${GREY}"
-  ci_status=" No branch on CI"
-  ;;
+    ci_color="${GREY}"
+    ci_status="No branch on CI"
+    ;;
   null|not_run)
-  ci_color="${GREY}"
-  ci_status=" Not run"
-  ;;
+    ci_color="${GREY}"
+    ci_status="Not run"
+    ;;
 esac
 
 jira_response=$(flow-jira-rest-2 issue/$jira_id)
@@ -69,8 +68,11 @@ case $github_summary in
   github_summary="${GREY}No pull-request: create one with \`flow pr\`${NC}"
   ;;
 esac
-ci_summary="$ci_color$(last-build-short-url $branch)$ci_status${NC}"
 github_summary=$(echo $github_summary | sed -e "s|https://github.com/.*/pull/|GH:|" )
+
+ci_summary="$ci_color$ci_short_url $ci_status${NC}"
+
+
 echo "${NC}---------------------------------------------------------------------------------------------------------------"
 echo "${BLUE}$jira_id${NC} [$jira_status] $jira_summary"
 echo "$ci_summary $github_summary${NC}"
