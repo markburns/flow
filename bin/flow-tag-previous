@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+tags=`flow-tags`.split("\n").map do |tag|
+  Gem::Version.new(tag)
+end
+
+puts "v#{tags[-2]}"
+
