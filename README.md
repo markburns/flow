@@ -73,6 +73,8 @@ Initial known dependencies. (There may be more I haven't realised just yet)
 * possible dependency on something from yadr https://github.com/skwp/dotfiles
 * jq
 * yq
+* ruby
+* commander, byebug: `gem install commander byebug terminal-table`
 
 Also there's a dependency on opening gvim for my current client's project.
 I think my github handle is also in here at the moment.  Those are easy to sort out.
@@ -91,6 +93,22 @@ export GH_TOKEN=abcdef123
 export JIRA_TOKEN=abcdef123
 export JIRA_SUBDOMAIN=something
 export JIRA_USERNAME=whatever@something.com
+```
+
+copy colors.zsh to somewhere it can be sourced.
+
+E.g. if you use yadr you can do:
+
+```
+cp colors.zsh ~/.zsh.after/colors.zsh
+```
+
+OR
+
+add the following line to your .zshrc, .zsh_profile, .bashrc, .bash_profile etc:
+
+```
+source ~/path/to/flow/colors.zsh
 ```
 
 ## Tilix config
