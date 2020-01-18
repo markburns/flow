@@ -10,6 +10,9 @@ id=$(flow-jira-current-ticket)
 title="[$id] $title"
 url=$(hub pull-request -b $base_branch -h $branch -m "$title")
 
+echo "transitioning to Review"
+flow-jira-transition REVIEW
+
 if [ $base_branch = master ]; then
   echo "HOTFIX $title $url"
 else
