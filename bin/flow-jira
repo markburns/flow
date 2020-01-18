@@ -29,10 +29,11 @@ end
 def git_log
   `git log`
 end
+
 command :next do |c|
   c.syntax = 'flow-jira --status <STATUS>'
   c.description = 'Choose your next JIRA ticket and create a correspondingly named github branch'
-  c.option '--status STRING', String, '"Next up" (default), "Awaiting Release", "UAT", "In Progress", "Released"'
+  c.option '--status STRING', String, '"Next up" (default), "New", "Awaiting Release", "UAT", "In Progress", "Released"'
   c.option '--epic STRING', String, 'The name of the epic (matches on substrings)'
   c.option '--slack BOOLEAN','Boolean', 'Format with URLs for slack'
 
