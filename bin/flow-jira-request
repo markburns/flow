@@ -21,4 +21,4 @@ REGEX= /#{CONTROL_CHARACTERS}/
 result.force_encoding("utf-8")
 result.gsub!(REGEX, " ")
 
-puts result
+puts result if result.length > 0
