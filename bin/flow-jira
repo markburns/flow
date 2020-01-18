@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
 require 'byebug'
 require 'json'
 require 'active_support/all'

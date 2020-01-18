@@ -8,7 +8,7 @@ branch=$(flow-jira-matching-branch $jira_id)
 
 ci_response=$(last-build 'first' $branch)
 ci_status=$(printf "%s" $ci_response | jq '.status' | sed -e 's/"//g')
-ci_short_url=$(printf "%s" $ci_response | jq '.build_url' | sed -e 's/^"\|"$//g' | sed 's|https://circleci.com/gh/SilkFred/SilkFred/|CI:|' | sed -e 's/null//')
+ci_short_url=$(printf "%s" $ci_response | jq '.build_url' | sed -e 's/^"\|"$//g' | sed "s|https://circleci.com/gh/$(repo)/|CI:|" | sed -e 's/null//')
 
 case $ci_status in
   failed)
