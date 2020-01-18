@@ -1,10 +1,12 @@
 #!/usr/bin/env zsh
 
 branch=${1:-$(current-branch)}
-BUILD_NUM=$(last-build-number $branch)
+response=$(last-build ".[0]" $branch)
+BUILD_NUM=$(printf "%s" $response | jq '.build_num')
 REPO=$(repo)
 ARTIFACTS_PATH="project/github/$REPO/$BUILD_NUM/artifacts"
-STATUS=$(ci-status $branch)
+STATUS=$(printf "%s" $response | jq '.status')
+BUILD_TIME=$(printf "%s" $response | jq '.build_time_millis')
 BUILD_URL=https://circleci.com/gh/$REPO/$BUILD_NUM
 
 if [ '"running"' = $STATUS ]; then

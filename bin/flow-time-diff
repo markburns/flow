@@ -1,0 +1,6 @@
+start_time=$1
+epoch=$(date --date $start_time +%s)
+now=$(date +%s)
+duration=$(expr $now - $epoch)
+
+echo $(flow-time-format $duration)

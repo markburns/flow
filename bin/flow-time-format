@@ -1,0 +1,4 @@
+minutes=$(($1 / 60))
+seconds=$(($1 % 60))
+seconds=$(printf "%02d" $seconds)
+echo $minutes:$seconds

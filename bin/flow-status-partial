@@ -22,6 +22,11 @@ case $ci_status in
     ;;
   running)
     ci_color="${ORANGE}"
+    start_time=$(printf %s $ci_response | jq '.start_time' | sed -e 's/"//g')
+    last_build_duration_millis=$(printf %s $ci_response | jq '.previous.build_time_millis' )
+    last_build_duration_seconds=$(($last_build_duration_millis / 1000))
+    running_time=$(flow-time-diff $start_time)
+    ci_status="$ci_status $running_time/$(flow-time-format $last_build_duration_seconds)"
     ;;
   null)
     ci_color="${GREY}"
