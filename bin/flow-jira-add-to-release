@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+# usage
+# flow-jira-add-to-release $ticket $version
+ticket=$1
+version=$2
+
+body="'{\"fixVersions\":[{\"set\":[{\"name\":\"$version\"}]}]}'"
+flow-jira-request PUT rest/api/2/issue/$ticket update:=$body
