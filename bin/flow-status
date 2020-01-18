@@ -4,7 +4,6 @@ set -e
 
 ci=$2
 ids=$(flow-jira-ticket-ids)
-clear
 
 if [[ 'extra' = $1 ]]; then
   echo
