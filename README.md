@@ -64,13 +64,15 @@ I'm happy to try
 
 Initial known dependencies. (There may be more I haven't realised just yet)
 
+* git
 * hub
 * httpie
 * bash
 * zsh
-* git
-* get-github-pr-review-comments
-* yadr 
+* get-github-pr-review-comments https://github.com/azu/get-github-pr-review-comments
+* possible dependency on something from yadr https://github.com/skwp/dotfiles
+* jq
+* yq
 
 Also there's a dependency on opening gvim for my current client's project.
 I think my github handle is also in here at the moment.  Those are easy to sort out.
@@ -78,12 +80,18 @@ I think my github handle is also in here at the moment.  Those are easy to sort 
 
 ## Environment variables
 Add environment variables GH_TOKEN, JIRA_USERNAME, JIRA_TOKEN, JIRA_SUBDOMAIN.
-Get github token here: https://github.com/settings/tokens
-JIRA token here: https://id.atlassian.com/manage/api-tokens
-I'm not in any rush to do these things, as the main goal is  making
-my life easier and better first, with it being re-usable elsewhere being
-a secondary goal.
 
+* Circle token here: https://circleci.com/account/api
+* Get github token here: https://github.com/settings/tokens
+* JIRA token here: https://id.atlassian.com/manage/api-tokens
+
+```
+export CIRCLE_TOKEN=abcdef123
+export GH_TOKEN=abcdef123
+export JIRA_TOKEN=abcdef123
+export JIRA_SUBDOMAIN=something
+export JIRA_USERNAME=whatever@something.com
+```
 
 ## Tilix config
 Set up Tilix like this for useful actions when control clicking to open links
