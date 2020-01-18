@@ -1,1 +1,1 @@
-git branch | grep -i -o '[a-z]\+\-[0-9]\+'
+git branch | grep -i '^\*\? *[a-z]\+\-[0-9]\+' | grep -i -o '[a-z]\+\-[0-9]\+' 
