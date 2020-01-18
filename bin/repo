@@ -1,3 +1,3 @@
 #!/usr/bin/env zsh
 
-cat .git/config | grep .git | grep ":.*" -o | sed -e 's/:\|\.git$//g'
+cat .git/config | grep .git | grep "\:.*" -o | sed -e 's/\://g' | sed 's/\.git$//'
