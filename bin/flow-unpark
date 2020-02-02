@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+jira_ticket=${1:-$(flow-jira-current-ticket)}
+branch=$(flow-jira-matching-branch $jira_ticket)
+git checkout tmp-$branch
+git checkout -b $branch || git checkout $branch
+git branch -d tmp-$branch
+
+flow-jira-transition IN_PROGRESS $jira_ticket

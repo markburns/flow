@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+branch=${1:-$(current-branch)}
+base_branch='master'
+flow-pr $branch $base_branch
