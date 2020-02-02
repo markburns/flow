@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+title=$1
+project=${2:-'TECH'}
+echo "Type your Description then Ctrl-D (doesn't work correctly with single/double quotes yet):"
+description=$(cat | awk 1 ORS='\\n' | sed -e "s/'/\\\\'/g" | sed -e 's/"/\\"/g')
+
+fields="{\"summary\":\"$title\",\"description\":\"$description\",\"project\":{\"key\":\"$project\"},\"issuetype\":{\"name\":\"Task\"}}"
+flow-jira-request POST /rest/api/2/$url_path fields:="'$fields'"
