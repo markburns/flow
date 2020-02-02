@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+# usage
+# flow-jira-assign <ticket_id> [username] - defaults to first part of JIRA_USERNAME
+
+epic_id=$1
+url="https://${JIRA_SUBDOMAIN}.atlassian.net/secure/RapidBoard.jspa?rapidView=15&view=planning.nodetail&issueLimit=100&selectedEpic=$epic_id"
+firefox $url
