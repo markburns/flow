@@ -8,10 +8,17 @@ git push --force-with-lease || git push --set-upstream origin $branch
 title=$(flow-jira-title)
 id=$(flow-jira-current-ticket)
 title="[$id] $title"
-url=$(hub pull-request -b $base_branch -h $branch -m "$title")
 
-echo "transitioning to Review"
-flow-jira-transition REVIEW
+echo "$title"
+echo "Type your PR description then Ctrl-D:"
+description=$(cat)
+
+# create a draft PR to develop
+url=$(hub pull-request -d -b $base_branch -h $branch -m "$title\n\n$description" )
+
+
+# echo "transitioning to Review"
+# flow-jira-transition REVIEW
 
 if [ $base_branch = master ]; then
   echo "HOTFIX $title $url"
