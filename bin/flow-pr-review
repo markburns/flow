@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+branch=${1:-$(current-branch)}
+base_branch=${2:-develop}
+
+git push --force-with-lease || git push --set-upstream origin $branch
+
+title=$(flow-jira-title)
+id=$(flow-jira-current-ticket)
+title="[$id] $title"
+
+url=$(hub pull-request -d -b $base_branch -h $branch -m "$title\n\n$description" )
+http POST https://mark.builtwithdark.com/pull-request/review flow-token:$FLOW_TOKEN message:="$title\n$url"
+# create a draft PR to develop
+
+
+# echo "transitioning to Review"
+# flow-jira-transition REVIEW
+
+if [ $base_branch = master ]; then
+  echo "HOTFIX $title $url"
+else
+  echo $title $url
+fi
