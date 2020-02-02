@@ -77,17 +77,17 @@ else
   done
 fi
 
-
 echo $NC
 echo "\n\`\`\`"
-format_tests_output_ruby='s = gets; while s do; output = eval s; puts  "------------------------------------------------------------------\n#{output}"; s = gets; end'
+
+format_tests_output_ruby='s = gets; while s do; output = eval s rescue output; puts  "------------------------------------------------------------------\n#{output}"; s = gets; end'
 results=$(xq '.' $build_asset_path/*.xml | jq '.testsuite.testcase[] | select(.failure) | .failure."#text"' | ruby -e $format_tests_output_ruby)
 
-
-if [ $2=="failures" ]; then
-  printf %s $results  | grep "^\-\+" -C1 | grep -v "^\-\+" | grep -v "^Failure\/Error" | grep -o "\.[\.a-z_\/]\+:[0-9]\+" | recode html..unicode
+if [ "$2" == "failures" ]; then
+  printf %s $results  | grep "^\-\+" -C1 | grep -v "^\-\+" | grep -v "^Failure\/Error" | grep -o "\.[\.a-z_\/]\+:[0-9]\+" | sed -e "s/\&apos;/'/" | recode html..unicode
 else
-  printf %s $results | recode html..unicode
+  printf %s $results | sed -e "s/\&apos;/'/" | recode html..unicode
 fi
 echo "\`\`\`"
-cat $build_asset_path/*.xml | less | grep testcase | grep "<failure message" | grep -o "<failure message\=\"[^\"]\+" | grep -o '".*' | sort | uniq -c | sort -n -r | sed -e "s/\s\+\([0-9]\+\)\s\"/\\${RED}\1 times: /" | recode html..unicode
+
+cat $build_asset_path/*.xml | less | grep testcase | grep "<failure message" | grep -o "<failure message\=\"[^\"]\+" |   sed 's/\:0x[0-9a-f]\{16\}//' | grep -o '".*' | sort | uniq -c | sort -n -r | sed -e "s/\s\+\([0-9]\+\)\s\"/\\${RED}\1 times: /" | sed -e "s/\&apos;/'/" | recode html..unicode
