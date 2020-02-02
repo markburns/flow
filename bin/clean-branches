@@ -1,10 +1,11 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 branches=$(git branch --merged | grep -v '^  develop' | grep -v '^\*' | awk '{print($1)}' | grep -v '^master$\|^develop$')
 
-readarray -t branch_array <<<"$branches"
+
+branch_array=("${(f)branches}")
 
 for b in $branch_array
 do
-git branch -D $b
+  git branch -D $b
 done

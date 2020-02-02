@@ -2,14 +2,27 @@
 
 set -e
 
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -f|--full) all=1;jira_ticket_missing=1;other_open=1;;
+  -a|--all) all=1;;
+  -j|--jira-ticket-missing) jira_ticket_missing=1;;
+  -o|--other-open) other_open=1;;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
+
+
 ci=$2
 ids=$(flow-jira-ticket-ids)
 
-if [[ 'extra' = $1 ]]; then
+if [[ $jira_ticket_missing == 1 ]]; then
   echo
   echo '---------------'
   echo "Branches without JIRA tickets"
   git branch | grep -v $ids | grep -v "develop\|master"
+fi
+
+if [[ $other_open == 1 ]]; then
   echo '---------------'
   echo "Other Open Pull Requests"
   echo
@@ -18,7 +31,11 @@ if [[ 'extra' = $1 ]]; then
   echo
 fi
 
-ids_array=("${(f)ids}")
+if [[ $all == 1 ]]; then
+  ids_array=("${(f)ids}")
+else
+  ids_array=$(flow-jira-current-ticket)
+fi
 
 for id in $ids_array; do
   flow-status-partial $id $ci
