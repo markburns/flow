@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 branch=${1:-$(current-branch)}
-response=$(last-build ".[0]" $branch)
+response=$(last-build $branch)
 BUILD_NUM=$(printf "%s" $response | jq '.build_num')
 REPO=$(repo)
 ARTIFACTS_PATH="project/github/$REPO/$BUILD_NUM/artifacts"

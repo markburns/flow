@@ -1,3 +1,4 @@
 branch=${1:-$(current-branch)}
 
-last-build '.[0].status' $branch
+last-build  $branch | jq '.status' | sed -e 's/"//g'
+

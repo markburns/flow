@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-last-build '.[0].build_num' $1
+last-build  $1 | jq '.build_num'
