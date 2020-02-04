@@ -3,22 +3,57 @@
 branch=${1:-$(current-branch)}
 base_branch=${2:-develop}
 
-git push --force-with-lease || git push --set-upstream origin $branch
+# git push --force-with-lease || git push --set-upstream origin $branch
+sleep 1 # give the webhooks a chance to get to CI
 
 title=$(flow-jira-title)
 id=$(flow-jira-current-ticket)
-title="[$id] $title"
+jira_url="https://$JIRA_SUBDOMAIN.atlassian.net/browse/$id"
+github_url=$(hub pr show -u)
 
-url=$(hub pull-request -d -b $base_branch -h $branch -m "$title\n\n$description" )
-http POST https://mark.builtwithdark.com/pull-request/review flow-token:$FLOW_TOKEN message:="$title\n$url"
-# create a draft PR to develop
+if [[ $github_url == *"no open pull requests found for branch"* ]]; then
+  echo 'no pull request'
+  exit
+fi
 
+github_link="<$github_url|$title>"
+jira_link="<$jira_url|$id>"
+
+ci_response=$(last-build $branch)
+ci_status=$(printf %s $ci_response | jq '.status' | sed -e 's/"//g')
+build_num=$(printf %s $ci_response | jq '.build_num')
+
+case $ci_status in
+  failed)
+    ci_url=$(last-build-url)
+    ci_status="<$ci_url| CI: :negative_squared_cross_mark:>"
+    ;;
+  success|fixed)
+    ci_status="CI: :heavy_check_mark:"
+    ;;
+  running)
+    start_time=$(printf %s $ci_response | jq '.start_time' | sed -e 's/"//g')
+    last_build_duration_millis=$(printf %s $ci_response | jq '.previous.build_time_millis' )
+    last_build_duration_seconds=$(($last_build_duration_millis / 1000))
+    running_time=$(flow-time-diff $start_time)
+    ci_url=$(last-build-url)
+    time="$running_time/$(flow-time-format $last_build_duration_seconds)"
+    link="<$ci_url| :crossed_fingers: CI: $build_num>"
+    ci_status="$link [$time]"
+    ;;
+  null)
+    ci_status=":grey_question: No branch on CI"
+    ;;
+  canceled)
+    ci_status=":grey_question: Cancelled"
+    ;;
+  not_run)
+    ci_status=":grey_question: Not run"
+    ;;
+esac
+
+
+http POST https://mark.builtwithdark.com/pull-request/review flow-token:$FLOW_TOKEN message:="\"[$jira_link] - PR: $github_link $ci_status\"" > /dev/null
 
 # echo "transitioning to Review"
-# flow-jira-transition REVIEW
-
-if [ $base_branch = master ]; then
-  echo "HOTFIX $title $url"
-else
-  echo $title $url
-fi
+flow-jira-transition "REVIEW"
