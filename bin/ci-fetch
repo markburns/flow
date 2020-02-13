@@ -1,0 +1,80 @@
+#!/usr/bin/env zsh
+
+branch=${1:-$(current-branch)}
+response=$(last-build $branch)
+BUILD_NUM=$(printf "%s" $response | jq '.build_num')
+REPO=$(repo)
+ARTIFACTS_PATH="project/github/$REPO/$BUILD_NUM/artifacts"
+STATUS=$(printf "%s" $response | jq '.status')
+BUILD_TIME=$(printf "%s" $response | jq '.build_time_millis')
+BUILD_URL=https://circleci.com/gh/$REPO/$BUILD_NUM
+
+if [ '"running"' = $STATUS ]; then
+  >&2 echo "${BLUE}Running: $BUILD_URL${NC}"
+  exit -1
+elif [ '"not_running"' = $STATUS ]; then
+  >&2 echo "${GREY}Not running: $BUILD_URL${NC}"
+  exit -1
+elif [ '"success"' = $STATUS ]; then
+  echo "${GREEN}OK${NC}"
+  exit 0
+elif [ '"canceled"' = $STATUS ]; then
+  >&2 echo "${GREY}Cancelled${NC}"
+  exit -2
+elif [ '"not_run"' = $STATUS ]; then
+  echo "${GREY}Not run${NC}"
+  exit -3
+elif [ '"fixed"' = $STATUS ]; then
+  echo $BUILD_URL
+  echo "${GREEN}Fixed${NC}"
+  exit 0
+fi
+
+setopt +o nomatch
+
+echo "Last build status: ${RED}$STATUS${NC}. $BUILD_URL"
+
+ASSET_URLS=(${(ps:\n:)"$(circle $ARTIFACTS_PATH '.[].url' )"})
+echo $ASSET_URLS
+exit
+
+set +x
+num_urls=$ASSET_URLS[(I)$ASSET_URLS[-1]]
+
+if [ -z $num_urls ]; then
+  echo -en "${RED}No artifacts found\n"
+  echo "circle project/github/$REPO/tree/$branch '.'"
+  exit 1
+else
+fi
+
+build_asset_path=tmp/build-assets/$BUILD_NUM
+
+if [ -e $build_asset_path ]; then
+else
+  mkdir -p $build_asset_path
+
+  for url in $ASSET_URLS; do
+    TRIMMED=$(sed -e 's/"//g' <<< $url)
+
+    xml=$(echo $url | grep "xml")
+    test_stats=$(echo $url | grep "test_stats")
+    echo -n "."
+
+    if [ -z $xml ]; then
+      if [ -z $test_stats ]; then
+        # echo 'not a test stat'
+        slugified_path=$(slugify $TRIMMED)
+        with_extension=$(echo $slugified_path | sed -e 's/\-\([^\-]\+\)$/\.\1/g')
+        OUTPUT_FILE="/$build_asset_path/$with_extension"
+        curl --silent "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
+      else
+        echo 'test stat--skipping'
+      fi
+    else
+      WORKER_NUMBER=$(echo $TRIMMED | grep -o '\([0-9]\+\)/test_output'  | grep -o '\([0-9]\+\)')
+      OUTPUT_FILE=tmp/build-assets/$BUILD_NUM/results$WORKER_NUMBER.xml
+      curl --silent "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
+    fi
+  done
+fi
