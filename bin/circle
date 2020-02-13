@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 
+selector=${2:-'.'}
 URL="https://circleci.com/api/v1.1/$1"
-curl -u "$CIRCLE_TOKEN:" "$URL" --silent | jq $2
+curl -u "$CIRCLE_TOKEN:" "$URL" --silent | jq $selector
