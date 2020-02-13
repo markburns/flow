@@ -22,10 +22,10 @@ jira_link="<$jira_url|$id>"
 ci_response=$(last-build $branch)
 ci_status=$(printf %s $ci_response | jq '.status' | sed -e 's/"//g')
 build_num=$(printf %s $ci_response | jq '.build_num')
+ci_url=$(   printf %s $ci_response | jq '.build_url' | sed -e 's/^"\|"$//g')
 
 case $ci_status in
   failed)
-    ci_url=$(last-build-url)
     ci_status="<$ci_url| CI: :negative_squared_cross_mark:>"
     ;;
   success|fixed)
@@ -36,13 +36,12 @@ case $ci_status in
     last_build_duration_millis=$(printf %s $ci_response | jq '.previous.build_time_millis' )
     last_build_duration_seconds=$(($last_build_duration_millis / 1000))
     running_time=$(flow-time-diff $start_time)
-    ci_url=$(last-build-url)
     time="$running_time/$(flow-time-format $last_build_duration_seconds)"
     link="<$ci_url| :crossed_fingers: CI: $build_num>"
     ci_status="$link [$time]"
     ;;
-  null)
-    ci_status=":grey_question: No branch on CI"
+  scheduled)
+    ci_status="<$ci_url| :clock12: CI: $build_num>"
     ;;
   canceled)
     ci_status=":grey_question: Cancelled"
@@ -50,10 +49,12 @@ case $ci_status in
   not_run)
     ci_status=":grey_question: Not run"
     ;;
+  null)
+    ci_status=":grey_question: No branch on CI"
+    ;;
 esac
 
-
-http POST https://mark.builtwithdark.com/pull-request/review flow-token:$FLOW_TOKEN message:="\"[$jira_link] - PR: $github_link $ci_status\"" > /dev/null
+http POST https://mark.builtwithdark.com/pull-request/review flow-token:$FLOW_TOKEN message:="\"[$jira_link] - PR: $github_link $ci_status\""
 
 # echo "transitioning to Review"
 flow-jira-transition "REVIEW"

@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+
 # usage
 # flow-jira-add-to-release $ticket $version
 ticket=$1
