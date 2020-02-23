@@ -2,7 +2,6 @@
 require 'commander/import'
 require 'terminal-table'
 require 'active_support/all'
-require 'byebug'
 
 program :name, 'Flow'
 program :version, '0.0.1'
