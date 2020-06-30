@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+@all_lines = []
+@all_lines.push(ARGV.join(' ')) && ARGV.clear if ARGV.any?
+
+finished = false
+
+while !$finished && line = gets
+  finished = true unless line["\n"]
+
+  @all_lines.push line
+end
+
+`git commit #{@all_lines.map { |l| "-m #{l.chomp.inspect}" }.join(' ')}`
