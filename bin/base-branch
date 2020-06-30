@@ -1,0 +1,7 @@
+if [ ! -e .base-branch ]; then
+  BASE_BRANCH=master
+else
+  BASE_BRANCH=$(cat .base-branch)
+fi
+
+echo $BASE_BRANCH
