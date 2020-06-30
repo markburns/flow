@@ -1,17 +1,18 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-tags=`flow-tags`.split("\n").map do |tag|
+tags = `flow-tags`.split("\n").map do |tag|
   Gem::Version.new(tag)
 end
 
-highest_tag = semvers.last
-major, minor, patch = highest_tag.bump.to_s.split(".")
+highest_tag = tags.last
+major, minor, patch = highest_tag.bump.to_s.split('.')
 
 major ||= 0
 minor ||= 0
 patch ||= 0
 
-tag= [major, minor, patch].join(".")
+tag = [major, minor, patch].join('.')
 
 if ARGV[0]
   puts "Current highest tag is #{highest_tag}"
@@ -19,4 +20,6 @@ if ARGV[0]
 else
   puts "tagging as #{tag}"
   `git tag v#{tag}`
+  puts 'pushing tags'
+  `git push --tags`
 end
