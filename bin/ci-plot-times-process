@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'byebug'
 
-lines=File.readlines(ARGV[0]).map(&:chomp)
-timings=lines.map(&:to_f)
-timings = timings.group_by{|i|
-  if i.zero?
-    i = Float::EPSILON
-  end
+lines = File.readlines(ARGV[0]).map(&:chomp)
+timings = lines.map(&:to_f)
+timings = timings.group_by do |i|
+  i = Float::EPSILON if i.zero?
 
   (Math.log10(i) / 10.0).round(1) * 10
-}
+end
 
-File.open(ARGV[1], "w") do |f|
+File.open(ARGV[1], 'w') do |f|
   timings.each do |power, results|
-    digits = 10 ** power
+    digits = 10**power
 
-    formatted = "%2f" % digits
+    formatted = '%2f' % digits
 
     f << "#{formatted}\t#{results.sum / 60.0}\n"
   end
