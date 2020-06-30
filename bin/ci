@@ -1,3 +1,4 @@
 #!/usr/bin/env zsh
 
-ci-fetch $@ || ci-output-failures
+ci-fetch $@
+ci-output-failures $@

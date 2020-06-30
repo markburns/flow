@@ -2,23 +2,53 @@
 
 branch=${1:-$(current-branch)}
 response=$(last-build $branch)
-build_num=$(printf "%s" $response | jq '.build_num')
+BUILD_NUM=$(printf "%s" $response | jq '.build_num')
+SECOND_ARGUMENT=${2:-""}
+BUILD_ASSET_PATH=./tmp/build-assets/$BUILD_NUM
 
-second_argument=${2:-""}
-build_asset_path=./tmp/build-assets/$build_num
+FORMAT_TESTS_OUTPUT_RUBY='s = gets; while s do; output = eval s rescue output; puts  "------------------------------------------------------------------\n#{output}"; s = gets; end'
 
-format_tests_output_ruby='s = gets; while s do; output = eval s rescue output; puts  "------------------------------------------------------------------\n#{output}"; s = gets; end'
-results=$(xq '.' $build_asset_path/*.xml | jq '.testsuite.testcase[] | select(.failure) | .failure."#text"' | ruby -e $format_tests_output_ruby)
-failures=$(printf %s $results  | grep "^\-\+" -C1 | grep -v "^\-\+" | grep -v "^Failure\/Error" | grep -o "\.[\.a-z_\/]\+:[0-9]\+" | sed -e "s/\&apos;/'/" | recode html..unicode)
+RESULTS=$(
+  xq '.' $BUILD_ASSET_PATH/*.xml | \
+  jq '.testsuite.testcase[] | select(.failure) | .failure."#text"' | \
+  ruby -e $FORMAT_TESTS_OUTPUT_RUBY
+)
 
-if [[ "$second_argument" == "failures" ]]; then
-  printf %s $failures
+FAILURES=$(
+  echo $RESULTS  | \
+   grep "^\-\+" -C1 | \
+   grep -v "^\-\+" | \
+   grep -v "^Failure\/Error" | \
+   grep -o "\.[\.a-z_\/]\+:[0-9]\+" | \
+   sed -e "s/\&apos;/'/" | \
+   recode html..unicode | \
+   sort
+)
+
+if [[ "$SECOND_ARGUMENT" == "failures" ]]; then
+  printf %s $FAILURES
 else
-  if [[ "$second_argument" == "rerun" ]]; then
-    printf %s $failures  |  xargs spring rspec
+  if [[ "$SECOND_ARGUMENT" == "rerun" ]]; then
+     echo $FAILURES | cut -f1 -d: | sort | uniq | xargs --null spring parallel_rspec
+
+    exit
   else
-    printf %s $results
+    printf %s $RESULTS
   fi
 fi
 
-cat $build_asset_path/*.xml | less | grep testcase | grep "<failure message" | grep -o "<failure message\=\"[^\"]\+" |   sed 's/\:0x[0-9a-f]\{16\}//' | grep -o '".*' | sort | uniq -c | sort -n -r | sed -e "s/\s\+\([0-9]\+\)\s\"/\\${RED}\1 times: /" | sed -e "s/\&apos;/'/" | recode html..unicode
+function display_summary(){
+  cat $BUILD_ASSET_PATH/*.xml | \
+    less | \
+    grep testcase | \
+    grep "<failure message" | \
+    grep -o "<failure message\=\"[^\"]\+" |   \
+    sed 's/\:0x[0-9a-f]\{16\}//' | \
+    grep -o '".*' | \
+    sort | \
+    uniq -c | \
+    sort -n -r | \
+    sed -e "s/\s\+\([0-9]\+\)\s\"/\\${RED}\1 times: /" | \
+    sed -e "s/\&apos;/'/" | \
+    recode html..unicode
+}

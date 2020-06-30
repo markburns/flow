@@ -35,38 +35,36 @@ setopt +o nomatch
 echo "Last build status: ${RED}$STATUS${NC}. $BUILD_URL"
 
 ASSET_URLS=(${(ps:\n:)"$(circle $ARTIFACTS_PATH '.[].url' )"})
-echo $ASSET_URLS
-exit
 
 set +x
-num_urls=$ASSET_URLS[(I)$ASSET_URLS[-1]]
+NUM_URLS=$ASSET_URLS[(I)$ASSET_URLS[-1]]
 
-if [ -z $num_urls ]; then
+if [ -z $NUM_URLS ]; then
   echo -en "${RED}No artifacts found\n"
   echo "circle project/github/$REPO/tree/$branch '.'"
   exit 1
 else
 fi
 
-build_asset_path=tmp/build-assets/$BUILD_NUM
+BUILD_ASSET_PATH=tmp/build-assets/$BUILD_NUM
 
-if [ -e $build_asset_path ]; then
+if [ -e $BUILD_ASSET_PATH ]; then
 else
-  mkdir -p $build_asset_path
+  mkdir -p $BUILD_ASSET_PATH
 
   for url in $ASSET_URLS; do
     TRIMMED=$(sed -e 's/"//g' <<< $url)
 
-    xml=$(echo $url | grep "xml")
-    test_stats=$(echo $url | grep "test_stats")
+    IS_XML=$(echo $url | grep "xml")
+    IS_TEST_STATS=$(echo $url | grep "test_stats")
     echo -n "."
 
-    if [ -z $xml ]; then
-      if [ -z $test_stats ]; then
+    if [ -z $IS_XML ]; then
+      if [ -z $IS_TEST_STATS ]; then
         # echo 'not a test stat'
-        slugified_path=$(slugify $TRIMMED)
-        with_extension=$(echo $slugified_path | sed -e 's/\-\([^\-]\+\)$/\.\1/g')
-        OUTPUT_FILE="/$build_asset_path/$with_extension"
+        SLUGIFIED_PATH=$(slugify $TRIMMED)
+        WITH_EXTENSION=$(echo $SLUGIFIED_PATH | sed -e 's/\-\([^\-]\+\)$/\.\1/g')
+        OUTPUT_FILE="/$BUILD_ASSET_PATH/$WITH_EXTENSION"
         curl --silent "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
       else
         echo 'test stat--skipping'
