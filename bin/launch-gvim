@@ -1,4 +1,7 @@
 #!/bin/bash
+
+cd $(cat ~/.last-directory)
+
 echo "launched with:" >> /home/mark/.gvim-launcher.log
 echo "pwd: $(pwd)" >> /home/mark/.gvim-launcher.log
 echo "command (\$0): $0" >> /home/mark/.gvim-launcher.log
@@ -10,14 +13,14 @@ echo "\$5:     $5" >> /home/mark/.gvim-launcher.log
 echo "\$6:     $6" >> /home/mark/.gvim-launcher.log
 
 
+xdotool keyup Control
+
 case $1 in
      relative)
-          cd ~/SilkFred/SilkFred/
           echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
           /usr/bin/gvim --remote +$5 $4
           ;;
      relative-no-line)
-          cd ~/SilkFred/SilkFred/
           echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
           /usr/bin/gvim --remote $2
           ;;
@@ -30,12 +33,10 @@ case $1 in
           /usr/bin/gvim --remote $2
           ;;
      relative-no-dot)
-          cd ~/SilkFred/SilkFred/
           echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
           /usr/bin/gvim --remote +$5 $4
           ;;
      relative-no-dot-no-line)
-          cd ~/SilkFred/SilkFred/
           echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
           /usr/bin/gvim --remote $2
           ;;
