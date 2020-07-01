@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-tags=`flow-tags`.split("\n").map do |tag|
+tags = `flow-tags`.split("\n").map do |tag|
   Gem::Version.new(tag)
 end
 

@@ -1,10 +1,15 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
-tags=`git tag`.split("\n")
+tags = `git tag`.split("\n")
 
 semvers = tags.map do |tag|
-  tag = tag.gsub(/^v/, "")
-  Gem::Version.new(tag) rescue nil
+  tag = tag.gsub(/^v/, '')
+  begin
+    Gem::Version.new(tag)
+  rescue StandardError
+    nil
+  end
 end.compact
 
 puts semvers.sort
