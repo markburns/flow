@@ -1,1 +1,3 @@
-git merge-base $(current-branch) $(base-branch)
+BASE_BRANCH=${1:-$(base-branch)}
+
+git merge-base $(current-branch) $BASE_BRANCH

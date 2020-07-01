@@ -1,8 +1,3 @@
 #!/usr/bin/env bash
-if [ ! -e .base-branch ]; then
-  branch=master
-else
-  branch=$(cat .base-branch)
-fi
-
-show-changed-files $branch | grep "\.rb$"  | exists | xargs rubocop -a
+BASE_BRANCH=${1:-$(base-branch)}
+show-changed-files $BASE_BRANCH | grep "[\.rb|\.rake|Gemfile]$"  | exists | xargs rubocop -a
