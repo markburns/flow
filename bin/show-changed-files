@@ -1,4 +1,2 @@
 #!/usr/bin/env bash
-main=${1:-master}
-merge_base=$(git merge-base $(current-branch) $main)
-git diff --name-only $(current-branch) $merge_base | exists
+show-changed-files-list $1 | sort | uniq

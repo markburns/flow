@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+BASE_BRANCH=${1:-$(base-branch)}
+MERGE_BASE=$(merge-base $BASE_BRANCH)
+
+files=$(git diff --name-only $(current-branch) $MERGE_BASE | exists;
+  git diff --name-only $MERGE_BASE $(current-branch) | exists )
+
+for f in $files; do
+  echo $f
+done
