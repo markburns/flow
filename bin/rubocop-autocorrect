@@ -1,3 +1,18 @@
 #!/usr/bin/env bash
+
+# auto correct can't run in conjunction with -P (parallel)
+FLAGS='-P'
+FAIL_LEVEL='w'
+
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -a|--auto-correct) FLAGS='-a';;
+  -r|--refactor) FAIL_LEVEL='r';;
+  -c|--convention) FAIL_LEVEL='c';;
+  -w|--warn) FAIL_LEVEL='w';;
+  -e|--error) FAIL_LEVEL='e';;
+  *) echo "Unknown parameter passed: $1"; exit 1;;
+esac; shift; done
+
 BASE_BRANCH=${1:-$(base-branch)}
-show-changed-files $BASE_BRANCH | grep "[\.rb|\.rake|Gemfile]$"  | exists | xargs rubocop -a
+
+show-changed-files $BASE_BRANCH | grep "\.rb$\|\.rake$\|Gemfile$"  #| exists | xargs rubocop $FLAGS --fail-level $FAIL_LEVEL --display-only-fail-level-offenses
