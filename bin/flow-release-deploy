@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+#
+require 'byebug'
+
+`git checkout master`
+`git reset --hard origin/master`
+`git pull --rebase`
+
+bin/production-deploy

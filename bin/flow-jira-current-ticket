@@ -1,1 +1,3 @@
-echo $(current-branch | grep -o '^[^\-]*\-[0-9]\+')
+#!/usr/bin/env bash
+BRANCH=$(current-branch | sed 's/^feat\///g' | grep -o '^[^\-]*\-[0-9]\+')
+echo ${BRANCH^^}

@@ -6,4 +6,4 @@ git checkout -b tmp-$branch || git checkout tmp-$branch
 git branch -d $branch
 git checkout develop
 
-flow-jira-transition NEXT_UP $jira_ticket
+# flow-jira-transition NEXT_UP $jira_ticket

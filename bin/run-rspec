@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "\$@:     $@" >> /home/mark/.command-launcher.log
+
+xdotool keyup Control
+
+cd $(cat ~/.last-directory)
+SPRING_PRESENCE=$(cat Gemfile | grep -o spring | head -n1)
+xdotool type --window tilix --delay 0 "bundle exec $SPRING_PRESENCE rspec "
+
+for arg in "$@"
+do
+  xdotool type --window tilix --delay 0 "\"$arg\""
+  xdotool key space
+done
+
+xdotool key Return
+
+xdotool keydown Control

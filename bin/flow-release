@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+#
+require 'yaml'
+require 'byebug'
+require 'csv'
+require 'byebug'
+require 'json'
+require 'active_support/all'
+require 'commander/import'
+require 'terminal-table'
+
+program :name, 'flow-release'
+program :version, '0.0.1'
+program :description, 'Take the pain out of deploying'
+
+require_relative 'release_text'
+
+command :prepare do |c|
+  c.syntax = 'flow-release prepare [--dry] [--no-git]'
+  c.description = 'Prepare the next release to production'
+  c.option '--dry BOOLEAN', 'Boolean', "don't make any destructive changes"
+  c.option '--no-git BOOLEAN', 'Boolean', "you have the latest master, and you're on the latest head of develop, so no need to update your local branches "
+
+  c.action do |_args, options|
+    unless options.no_git
+      `git checkout master`
+      `git reset --hard origin/master`
+      `git pull --rebase`
+      `git checkout develop`
+      `git reset --hard origin/develop`
+      `git pull --rebase`
+    end
+
+    byebug
+    prs_in_develop=`flow-release-prs-in-develop`.split "\n"
+    prs_in_master=`flow-release-prs-in-master`.split "\n"
+    to_release = prs_in_develop - prs_in_master
+
+    semver_tag=`flow-tag-next`.chomp
+    gh_text, slack_text = generate_release_text(to_release, semver_tag)
+    gh_title = "Release #{semver_tag}"
+
+    if options.dry
+      puts
+      puts "-----------------------------------------"
+      puts "Would create a PR using the following text:"
+      puts "Title:"
+      puts gh_title
+      puts "Body:"
+      puts gh_text
+      puts "-----------------------------------------"
+    else
+      body = gh_text.join("\n")
+
+      IO.popen(["gh", "pr", "create", '-B', 'master', '-t', "Release v#{semver_tag}", "--body", body], :err=>[:child, :out]) do |io|
+        puts io.read
+      end
+
+      File.open(".latest-release-test", 'w') do |f|
+        f << gh_title
+        f << "\n"
+        f << body
+      end
+    end
+
+    puts
+    puts "-----------------------------------------"
+    puts "Paste the following in #releases on slack"
+    puts
+    puts slack_text.join("\n")
+
+    puts
+    puts
+    puts "-----------------------------------------"
+    puts 'send an email to:'
+    puts
+    puts 'Orit Mutznik <orit@silkfred.com>, Emma Watkinson <emma@silkfred.com>, Josh Algdal <josh@silkfred.com>, Stephen Jackson <stephen@silkfred.com>, Rob Liddiard <rob@silkfred.com>, Andrew Hogan <andrew@silkfred.com>, Charlotte Dare <Charlotte@silkfred.com>, Aimee Kenyon <aimee@silkfred.com>, David Fitzgibbon <david@silkfred.com>, Natasha Lake <natasha@silkfred.com>, Liam Bennett <liam@silkfred.com>, Hannah Saman <hannah@silkfred.com>, Rachel Bowman <rachel.bowman@silkfred.com>'
+    puts
+    puts slack_text.join("\n")
+  end
+end

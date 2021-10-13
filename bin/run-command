@@ -8,4 +8,5 @@ do
   xdotool type --window tilix --delay 0 "$arg"
   xdotool key space
 done
+
 xdotool key Return

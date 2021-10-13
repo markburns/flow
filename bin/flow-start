@@ -1,18 +1,17 @@
 #!/usr/bin/env zsh
 
-ticket=$1
-title=$(slugify $(flow-jira-title $ticket))
-branch="$ticket-$title"
+TICKET=$1
+TITLE=$(slugify $(flow-jira-title $TICKET))
+BRANCH="$TICKET-$TITLE"
 
-echo "create new branch $branch"
-git fetch && git checkout develop && git reset origin/develop > /dev/null
-git checkout -b $branch 2> /dev/null || git checkout $branch
+echo "create new branch $BRANCH"
+git fetch && git checkout develop && git pull --rebase && git reset --hard origin/develop > /dev/null
+git checkout -b $BRANCH 2> /dev/null || git checkout $BRANCH
 
 echo '-----------------'
-echo https://$JIRA_SUBDOMAIN.atlassian.net/browse/$ticket
+echo https://$JIRA_SUBDOMAIN.atlassian.net/browse/$TICKET
 echo $response  | jq '.fields | .description'
 
 
-flow-jira-assign $ticket
-
-flow-jira-transition 'IN_PROGRESS' $ticket 
+flow-jira-assign $TICKET
+flow-jira-transition 'IN_PROGRESS' $TICKET

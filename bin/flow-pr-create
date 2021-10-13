@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+branch = ARGV[0].chomp
+base_branch = ARGV[1].chomp
+
+title=`flow-jira-title`.chomp
+id=`flow-jira-current-ticket`.chomp
+title="#{id}: #{title}"
+
+# create a draft PR to develop
+body=File.read 'tmp/.github/pr.md'
+
+IO.popen(['gh', 'pr', 'create', '--draft',
+           '--base', base_branch,
+           '--head', branch,
+           '--title', title,
+           '--body', body ]) do |io|
+             puts io.read
+           end

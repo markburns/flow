@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+tags = `flow-tags`.split("\n").map do |tag|
+  Gem::Version.new(tag.gsub(/^v/, '').chomp)
+end
+
+highest_tag = tags.last
+major, minor, patch = highest_tag.bump.to_s.split('.')
+
+major ||= 0
+minor ||= 0
+patch ||= 0
+
+tag = [major, minor, patch].join('.')
+
+puts "v#{tag}"

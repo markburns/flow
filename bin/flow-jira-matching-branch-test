@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+source "stub.sh"
+#
+# @test "invoking with no branch present" {
+#   run flow-jira-matching-branch NOPE-123
+#   echo $output
+#   [ "$status" -eq 0 ]
+#   [ "$output" = "" ]
+# }
+
+@test "invoking with a branch present" {
+stub git 
+  run flow-jira-matching-branch TECH-1234
+  echo $output
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "TECH-1234-asdf" ]
+}

@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'byebug'
+base=ARGV[0] || `base-branch`.chomp
+changed_lines=  `git diff --ignore-all-space #{base} | changed-lines`.split("\n")
+
+violations=`rubocop-autocorrect -b #{base}`.split("\n")
+
+
+changed = violations
+  .select{|violation| changed_lines.any? {|change|
+
+  # E.g. matches only the first violation from below
+  #
+  # change: "app/controllers/admin_controller.rb:5"
+  #
+  # violation: "app/controllers/admin_controller.rb:5:3:
+  # violation: "app/controllers/admin_controller.rb:58:3:
+  violation[change + ':']
+}
+}
+
+# only error statuses
+puts changed.select {|failure| failure[' E: '] }

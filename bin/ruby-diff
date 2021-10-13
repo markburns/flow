@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+
+# --- c/spec/system/admin/priam/viewing_stock_adjustment_file_spec.rb
+# +++ w/spec/system/admin/priam/viewing_stock_adjustment_file_spec.rb
+# @@ -2,0 +3,11 @@ RSpec.describe 'Viewing an stock adjustment file', :js do
+
+
+def minus_file(line)
+  @file = line.gsub /^\-\-\- .\//, ''
+end
+
+def plus_file(line)
+  @file = line.gsub /^\+\+\+ .\//, ''
+end
+
+def process_line_numbers(line)
+  _at, minus, plus, *rest = line.split ' '
+
+  minus_start, minus_finish = minus.split(',')
+  minus_start.gsub!(/^\-/, '')
+
+  @minus_start = minus_start.to_i
+  @minus_finish = minus_finish.to_i
+
+  plus_start, plus_finish = plus.split(',')
+  @plus_start = plus_start.gsub!(/^\+/, '').to_i
+  @plus_finish = plus_finish.to_i
+end
+
+def display(line)
+  if line =~ /^\-\ /
+    @minus_start += 1
+    puts "#{@file.chomp}:#{@minus_start} #{line.chomp}"
+  end
+
+  if line =~ /^\+\ /
+    @plus_start += 1
+    puts "#{@file.chomp}:#{@plus_start} #{line.chomp}"
+  end
+end
+
+@minus_start = 0
+@plus_start = 0
+
+while line=gets do
+  if line=~/^\-\-\-/
+    if line !~ %r{/dev/null}
+      minus_file(line)
+    end
+  end
+
+  if line=~/^\+\+\+/
+    if line !~ %r{/dev/null}
+      plus_file(line)
+    end
+  end
+
+  if line=~/^\@\@\ /
+    process_line_numbers(line)
+  end
+
+  display(line)
+end

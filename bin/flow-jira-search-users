@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+flow-jira-request GET "rest/api/3/user/assignable/multiProjectSearch?projectKeys=$2&query=$1"

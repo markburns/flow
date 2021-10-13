@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-tags = `git tag`.split("\n")
+tags = `git tag`.split("\n").select{|t| t[/^v/]}.map{|s| s.gsub(/^v/i, "")}
 
 semvers = tags.map do |tag|
   tag = tag.gsub(/^v/, '')
@@ -12,4 +12,4 @@ semvers = tags.map do |tag|
   end
 end.compact
 
-puts semvers.sort
+puts semvers.sort.map{|s| "v#{s}" }

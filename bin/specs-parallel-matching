@@ -1,2 +1,2 @@
 #!/usr/bin/env zsh
-noglob find spec  -wholename */$1*spec.rb | xargs spring parallel_rspec
+specs-find-all-matching $@ | sort | uniq | xargs spring parallel_rspec

@@ -7,6 +7,7 @@ SECOND_ARGUMENT=${2:-""}
 BUILD_ASSET_PATH=./tmp/build-assets/$BUILD_NUM
 
 FORMAT_TESTS_OUTPUT_RUBY='s = gets; while s do; output = eval s rescue output; puts  "------------------------------------------------------------------\n#{output}"; s = gets; end'
+echo $BUILD_ASSET_PATH
 
 RESULTS=$(
   xq '.' $BUILD_ASSET_PATH/*.xml | \

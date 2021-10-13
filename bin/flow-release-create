@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+#
+require 'yaml'
+require 'byebug'
+require 'csv'
+
+dry = ARGV[0] && ARGV[0][/dry/]
+
+latest_release_filename = Dir.pwd + '/.latest-release-text'
+lines = File.readlines(latest_release_filename)
+
+if dry
+  puts lines
+else
+  puts 'tagging tags'
+  `flow-tag`
+
+  puts 'pushing tags'
+  `git push --tags`
+
+  `bin/production-deploy`
+  version = lines[0].strip.chomp.split(" ").last
+
+  puts "creating #{version} on GitHub"
+
+  IO.popen(["gh", "release", "create",
+            version,
+            '-t', version,
+            '-F', latest_release_filename], :err=>[:child, :out]) do |io|
+    puts io.read
+  end
+end

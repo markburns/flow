@@ -1,2 +1,3 @@
 #!/usr/bin/env zsh
 flow-github-graphql ~/flow/github-comments.gql   | jq '.data | .repository.pullRequests.edges[0].node | {author: .author.login, reviews: (.reviews.nodes[] | {author: .author.login, state: .state, comments: (.comments.nodes[] | {author: .author.login, url: .url, body: .bodyText, minimized: .isMinimized})}) }'
+# flow-github-graphql ~/flow/github-comments.gql   | jq '.data | .repository.pullRequests.edges[0].node.body '

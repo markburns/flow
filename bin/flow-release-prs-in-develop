@@ -1,0 +1,4 @@
+TAG=$(flow-tags | tail -n 1)
+
+git log master...develop | grep 'Merge pull request.*' -o | awk '{print $4}'
+

@@ -1,0 +1,4 @@
+while read line
+do
+  echo "$line" | grep -i '^\*\? *[a-z]\+\-[0-9]\+' | grep -i -o '[a-z]\+\-[0-9]\+'
+done < "${1:-/dev/stdin}"

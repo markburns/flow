@@ -65,14 +65,14 @@ else
         SLUGIFIED_PATH=$(slugify $TRIMMED)
         WITH_EXTENSION=$(echo $SLUGIFIED_PATH | sed -e 's/\-\([^\-]\+\)$/\.\1/g')
         OUTPUT_FILE="/$BUILD_ASSET_PATH/$WITH_EXTENSION"
-        curl --silent "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
+        curl --silent -L "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
       else
         echo 'test stat--skipping'
       fi
     else
       WORKER_NUMBER=$(echo $TRIMMED | grep -o '\([0-9]\+\)/test_output'  | grep -o '\([0-9]\+\)')
       OUTPUT_FILE=tmp/build-assets/$BUILD_NUM/results$WORKER_NUMBER.xml
-      curl --silent "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
+      curl --silent -L "$TRIMMED?circle-token=$CIRCLE_TOKEN" -o $OUTPUT_FILE
     fi
   done
 fi

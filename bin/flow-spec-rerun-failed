@@ -1,0 +1,2 @@
+#!/usr/bin/env zsh
+ci $(current-branch) failures | uniq | iconv -f UTF-16 -t UTF-8 | grep spec | xargs spring rspec

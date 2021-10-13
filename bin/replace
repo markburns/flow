@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Find and replace by a given list of files.
 #
@@ -11,7 +11,7 @@ shift
 items=$(ag -l --nocolor "$find_this" "$@")
 
 temp="${TMPDIR:-/tmp}/replace_temp_file.$$"
-IFS=$'\n'
+
 for item in $items; do
   sed "s/$find_this/$replace_with/gm" "$item" > "$temp" && mv "$temp" "$item"
 done

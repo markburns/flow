@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+ARGV.map do |partial_path|
+  puts `specs-find-partial-matching #{partial_path}`
+end

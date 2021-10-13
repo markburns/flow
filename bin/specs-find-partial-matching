@@ -1,0 +1,2 @@
+#!/usr/bin/env zsh
+noglob find spec  -wholename *$1*spec.rb

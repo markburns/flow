@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'commander/import'
 require 'terminal-table'
 require 'active_support/all'
@@ -21,10 +23,10 @@ program :description, 'Improve developer flow'
 #       say "#{t.id} #{t.title}"
 #     end
 #   end
-# 
+#
 #   exit
 # end
-# 
+#
 # command :standup do |c|
 #   c.syntax = 'flow standup'
 #   c.description = 'Run the standup'
@@ -32,8 +34,8 @@ program :description, 'Improve developer flow'
 #     `flow-standup`
 #   end
 # end
-# 
-# 
+#
+#
 def flow_status
   puts "Fetching status of #{ENV['JIRA_USERNAME']}'s JIRA tickets and PRs"
   puts `flow-status`
@@ -49,37 +51,37 @@ end
 
 def flow_standup
   result = `flow-standup`
-  sections = result.split("----------------------------------------------------------------------------------------------------")
+  sections = result.split('----------------------------------------------------------------------------------------------------')
   sections.reject!(&:blank?)
   index = 0
   puts `clear`
   puts sections[index]
 
-  while index < sections.length do
-    choice = choose("next step", "next", "previous", "quit")
+  while index < sections.length
+    choice = choose('next step', 'next', 'previous', 'quit')
     case choice
     when 'previous'
-      index -=1
+      index -= 1
       puts `clear`
       puts sections[index.to_i]
     when 'quit'
       exit
     else
-      index +=1
+      index += 1
       puts `clear`
       puts sections[index.to_i]
     end
   end
 end
 
-prompt = "What do you want to do?"
+prompt = 'What do you want to do?'
 
-choice = choose("Status", "Standup", "Assign ticket", "Check CI", "Exit")
+choice = choose('Status', 'Standup', 'Assign ticket', 'Check CI', 'Exit')
 case choice
-when "Status"
+when 'Status'
   flow_status
-when "Standup"
+when 'Standup'
   flow_standup
-when "Exit"
+when 'Exit'
   exit
 end

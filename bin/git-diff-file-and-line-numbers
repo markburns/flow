@@ -1,0 +1,2 @@
+#!/bin/sh
+GIT_EXTERNAL_DIFF=git-diff-file-and-line-numbers-tool git diff $@

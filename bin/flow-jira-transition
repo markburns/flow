@@ -22,6 +22,8 @@ jira_id_from_status(){
   JIRA_STATUS_GROOMED='71'
   JIRA_STATUS_TO_BE_GROOMED='141'
   JIRA_STATUS_AWAITING_RELEASE='11'
+  JIRA_STATUS_RELEASED='61'
+  JIRA_STATUS_DONE='161'
 
   jira_status_variable_name="\$JIRA_STATUS_$1"
   v_name=$(echo $jira_status_variable_name)

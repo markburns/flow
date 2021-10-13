@@ -1,0 +1,2 @@
+#!/usr/bin/env zsh
+noglob find $1 -wholename */$2/*

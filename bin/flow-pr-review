@@ -3,13 +3,13 @@
 branch=${1:-$(current-branch)}
 base_branch=${2:-develop}
 
-# git push --force-with-lease || git push --set-upstream origin $branch
+git push --force-with-lease || git push --set-upstream origin $branch
 sleep 1 # give the webhooks a chance to get to CI
 
 title=$(flow-jira-title)
 id=$(flow-jira-current-ticket)
 jira_url="https://$JIRA_SUBDOMAIN.atlassian.net/browse/$id"
-github_url=$(hub pr show -u)
+github_url=$(gh pr view  | grep "url:" | grep  -o "https.*")
 
 if [[ $github_url == *"no open pull requests found for branch"* ]]; then
   echo 'no pull request'
@@ -54,7 +54,11 @@ case $ci_status in
     ;;
 esac
 
-http POST https://mark.builtwithdark.com/pull-request/review flow-token:$FLOW_TOKEN message:="\"[$jira_link] - PR: $github_link $ci_status\""
+echo "marking as ready to review"
+gh pr ready
 
-# echo "transitioning to Review"
+echo "transitioning to Review on Jira"
 flow-jira-transition "REVIEW"
+
+echo "\"[$jira_link] - PR: $github_link $ci_status\""
+post-in-code-reviews "\"[$jira_link] - PR: $github_link\""

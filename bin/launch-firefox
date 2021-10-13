@@ -1,0 +1,8 @@
+#!/bin/bash
+
+cd $(cat ~/.last-directory)
+
+firefox $1
+echo "launched with:" >> /home/mark/.firefox-launcher.log
+echo "pwd: $(pwd)" >> /home/mark/.firefox-launcher.log
+echo "\$0: $0" >> /home/mark/.firefox-launcher.log

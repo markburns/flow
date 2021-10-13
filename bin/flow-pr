@@ -3,25 +3,15 @@
 branch=${1:-$(current-branch)}
 base_branch=${2:-develop}
 
-git push --force-with-lease || git push --set-upstream origin $branch
+# git push --force-with-lease || git push --set-upstream origin $branch
+mkdir -p tmp/.github
 
-title=$(flow-jira-title)
-id=$(flow-jira-current-ticket)
-title="[$id] $title"
+VIM_FILE='tmp/.github/pr.md'
+rm -f tmp/.github/pr.md
+cp .github/PULL_REQUEST_TEMPLATE.md $VIM_FILE
 
-echo "$title"
-echo "Type your PR description then Ctrl-D:"
-description=$(cat)
+sed -i "s/TICKET_NUMBER/$(flow-jira-current-ticket)/g" $VIM_FILE
+sed -i "s/Link to Jira Ticket/$(flow-jira-current-ticket)/g" $VIM_FILE
+vim $VIM_FILE +4
 
-# create a draft PR to develop
-url=$(hub pull-request -d -b $base_branch -h $branch -m "$title\n\n$description" )
-
-
-# echo "transitioning to Review"
-# flow-jira-transition REVIEW
-
-if [ $base_branch = master ]; then
-  echo "HOTFIX $title $url"
-else
-  echo $title $url
-fi
+flow-pr-create $branch $base_branch

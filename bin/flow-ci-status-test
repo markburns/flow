@@ -1,0 +1,5 @@
+@test "invoking with no branch on CI" {
+  run flow-ci-status
+  [ "$status" -eq 1 ]
+  [ "$output" = "foo: no such file 'nonexistent_filename'" ]
+}

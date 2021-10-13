@@ -2,44 +2,67 @@
 
 cd $(cat ~/.last-directory)
 
-echo "launched with:" >> /home/mark/.gvim-launcher.log
-echo "pwd: $(pwd)" >> /home/mark/.gvim-launcher.log
-echo "command (\$0): $0" >> /home/mark/.gvim-launcher.log
-echo "type:   (\$1): $1" >> /home/mark/.gvim-launcher.log
-echo "\$2:     $2" >> /home/mark/.gvim-launcher.log
-echo "\$3:     $3" >> /home/mark/.gvim-launcher.log
-echo "\$4:     $4" >> /home/mark/.gvim-launcher.log
-echo "\$5:     $5" >> /home/mark/.gvim-launcher.log
-echo "\$6:     $6" >> /home/mark/.gvim-launcher.log
+# echo "launched with:" >> /home/mark/.gvim-launcher.log
+# echo "pwd: $(pwd)" >> /home/mark/.gvim-launcher.log
+# echo "command (\$0): $0" >> /home/mark/.gvim-launcher.log
+# echo "type:   (\$1): $1" >> /home/mark/.gvim-launcher.log
+# echo "\$2:     $2" >> /home/mark/.gvim-launcher.log
+# echo "\$3:     $3" >> /home/mark/.gvim-launcher.log
+# echo "\$4:     $4" >> /home/mark/.gvim-launcher.log
+# echo "\$5:     $5" >> /home/mark/.gvim-launcher.log
+# echo "\$6:     $6" >> /home/mark/.gvim-launcher.log
 
 
 xdotool keyup Control
 
+# case $1 in
+#      relative)
+#           echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
+#           /usr/bin/gvim --remote +$5 $4
+#           ;;
+#      relative-no-line)
+#           echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
+#           /usr/bin/gvim --remote $2
+#           ;;
+#      full)
+#           echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
+#           /usr/bin/gvim --remote +$5 $4
+#           ;;
+#      full-no-line)
+#           echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
+#           /usr/bin/gvim --remote $2
+#           ;;
+#      relative-no-dot)
+#           echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
+#           /usr/bin/gvim --remote +$5 $4
+#           ;;
+#      relative-no-dot-no-line)
+#           echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
+#           /usr/bin/gvim --remote $2
+#           ;;
+# esac
+#
+# wmctrl -l  | grep GVIM | awk '{print($4 " " $5 " " $6 " " $7)}' | xargs wmctrl -R
+
+
 case $1 in
      relative)
-          echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
-          /usr/bin/gvim --remote +$5 $4
+          launch-tmux-vim $5 $4
           ;;
      relative-no-line)
-          echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
-          /usr/bin/gvim --remote $2
+          launch-tmux-vim $2
           ;;
      full)
-          echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
-          /usr/bin/gvim --remote +$5 $4
+          launch-tmux-vim $5 $4
           ;;
      full-no-line)
-          echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
-          /usr/bin/gvim --remote $2
+          launch-tmux-vim $2
           ;;
      relative-no-dot)
-          echo "/usr/bin/gvim --remote +$5 $4" >> /home/mark/.gvim-launcher.log
-          /usr/bin/gvim --remote +$5 $4
+          launch-tmux-vim $5 $4
           ;;
      relative-no-dot-no-line)
-          echo "/usr/bin/gvim --remote $2" >> /home/mark/.gvim-launcher.log
-          /usr/bin/gvim --remote $2
+          launch-tmux-vim $2
           ;;
 esac
 
-wmctrl -l  | grep GVIM | awk '{print($4 " " $5 " " $6 " " $7)}' | xargs wmctrl -R

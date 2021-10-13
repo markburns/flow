@@ -2,4 +2,12 @@
 
 ticket=$1
 
-git branch --all | grep $ticket | grep -i -o " \(.*\)" | grep -o "[^ ]*" | sed -e 's/^remotes\/origin\///' | grep -v "^tmp" | sort | uniq | head -n 1
+git branch --all \
+  | grep "$ticket\-" \
+  | grep -i -o " \(.*\)" \
+  | grep -o "[^ \*]*" \
+  | sed -e 's/^remotes\/origin\///' \
+  | grep -v "^tmp" \
+  | sort \
+  | uniq \
+  | head -n 1

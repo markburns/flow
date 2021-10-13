@@ -1,0 +1,2 @@
+#!/usr/bin/env zsh
+showlinenum.awk show_path=1 | awk '{print $1}' | sort | uniq | sed -e 's/:+\?$//' | uniq | grep '[0-9]$'

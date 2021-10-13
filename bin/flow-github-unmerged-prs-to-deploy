@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'byebug'
 require 'json'
@@ -37,25 +38,24 @@ Line = Struct.new(:ticket, :pull_request) do
     ticket.title
   end
 end
-merged=`flow-github-merged-prs-to-release`.split("\n")
+merged = `flow-github-merged-prs-to-release`.split("\n")
 
-awaiting_release=JSON.parse(`flow-jira-next "" "Awaiting Release"`)
-awaiting_release = awaiting_release.map{|t| Ticket.new(*t.values_at("id", "who", "title"))}
+awaiting_release = JSON.parse(`flow-jira-next "" "Awaiting Release"`)
+awaiting_release = awaiting_release.map { |t| Ticket.new(*t.values_at('id', 'who', 'title')) }
 
-
-open_prs=`flow-github-open-prs`.split("\n")
-open_prs = open_prs.map{|s| first, *rest = s.split(" "); PullRequest.new(first, rest.join(" "))}
+open_prs = `flow-github-open-prs`.split("\n")
+open_prs = open_prs.map { |s| first, *rest = s.split(' '); PullRequest.new(first, rest.join(' ')) }
 
 lines = open_prs.map do |pr|
-  ticket = awaiting_release.find{|t| t.id == pr.ticket}
+  ticket = awaiting_release.find { |t| t.id == pr.ticket }
   Line.new(ticket, pr)
 end
 
-still_open = lines.select{|l| l.ticket.present? }
+still_open = lines.select { |l| l.ticket.present? }
 
 if still_open.any?
   puts still_open.map(&:summary)
-  exit -1
+  exit(-1)
 else
   puts 'Good to go!'
 end

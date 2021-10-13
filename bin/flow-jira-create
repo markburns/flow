@@ -1,9 +1,38 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env ruby
 
-title=$1
-project=${2:-'TECH'}
-echo "Type your Description then Ctrl-D (doesn't work correctly with single/double quotes yet):"
-description=$(cat | awk 1 ORS='\\n' | sed -e "s/'/\\\\'/g" | sed -e 's/"/\\"/g')
+require 'yaml'
+require 'byebug'
+require 'csv'
+require 'json'
+require 'active_support/all'
+require 'fileutils'
+require 'terminal-table'
 
-fields="{\"summary\":\"$title\",\"description\":\"$description\",\"project\":{\"key\":\"$project\"},\"issuetype\":{\"name\":\"Task\"}}"
-flow-jira-request POST /rest/api/2/$url_path fields:="'$fields'"
+require 'commander/import'
+require 'byebug'
+require_relative 'flow_jira_request'
+
+program :name, 'flow-jira-create'
+program :version, '0.0.1'
+program :description, 'Easily create jira tickets'
+
+command :create do |c|
+  c.syntax = 'flow-jira-create [--title] [--description]'
+  c.description = 'create a jira ticket'
+
+  c.option '--title', 'String', "the title of the jira ticket. If missing you will be prompted to enter one"
+  c.option '--description', 'String', "The description. If missing you will be prompted to enter one"
+  c.option '--project', 'String', "Defaults to TECH"
+
+  c.action do |_args, options|
+    options.default :project => 'TECH'
+    project = options.project
+    title = options.title || ask("Enter the title:")
+    description = options.description || ask("Enter the description:")
+
+    json={"fields": {"summary":title, "description":description,"project": {"key":project}, "issuetype":{"name":"Task"}}}.to_json
+    say Jira.request(:post, "/rest/api/2/issues", json)
+  end
+end
+
+default_command :create

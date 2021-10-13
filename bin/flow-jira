@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'byebug'
 require 'json'
 require 'active_support/all'
@@ -34,28 +36,27 @@ command :next do |c|
   c.description = 'Choose your next JIRA ticket and create a correspondingly named github branch'
   c.option '--status STRING', String, '"Next up" (default), "New", "Awaiting Release", "UAT", "In Progress", "Released"'
   c.option '--epic STRING', String, 'The name of the epic (matches on substrings)'
-  c.option '--slack BOOLEAN','Boolean', 'Format with URLs for slack'
+  c.option '--slack BOOLEAN', 'Boolean', 'Format with URLs for slack'
 
-  c.action do |args, options|
-    options.default status: "Next up", epic: "", slack: false
+  c.action do |_args, options|
+    options.default status: 'Next up', epic: '', slack: false
     command = "flow-jira-next #{options.epic.inspect} #{options.status.inspect}"
 
-    response=`#{command}`
+    response = `#{command}`
 
     begin
-      tickets = JSON.parse(response).map{|h| Ticket.new(*h.values_at("id", "who", "title", "epic")) }
+      tickets = JSON.parse(response).map { |h| Ticket.new(*h.values_at('id', 'who', 'title', 'epic')) }
 
-      rows = tickets.map{|t|
+      rows = tickets.map do |t|
         id = options.slack ? t.slack_url : t.id
         [id, t.who, t.title, t.epic]
-      }
-      table = Terminal::Table.new(:headings => %w(id who title epic), :rows => rows)
+      end
+      table = Terminal::Table.new(headings: %w[id who title epic], rows: rows)
 
       puts table
-    rescue => e
+    rescue StandardError => e
       # puts response
       puts e
-
     end
   end
 

@@ -1,25 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-
-tags = `flow-tags`.split("\n").map do |tag|
-  Gem::Version.new(tag)
-end
-
-highest_tag = tags.last
-major, minor, patch = highest_tag.bump.to_s.split('.')
-
-major ||= 0
-minor ||= 0
-patch ||= 0
-
-tag = [major, minor, patch].join('.')
+#
+tag = `flow-tag-next`
 
 if ARGV[0]
-  puts "Current highest tag is #{highest_tag}"
+  puts "Current highest tag is #{`flow-tag-current`}"
   puts "would tag with #{tag}"
 else
   puts "tagging as #{tag}"
-  `git tag v#{tag}`
+  `git tag #{tag}`
   puts 'pushing tags'
   `git push --tags`
 end

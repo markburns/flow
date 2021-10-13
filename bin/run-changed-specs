@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 echo "spring rspec $(show-changed-specs)"
-show-changed-specs | xargs spring rspec
+show-changed-specs | xargs spring parallel_rspec

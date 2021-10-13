@@ -1,9 +1,0 @@
-#!/usr/bin/env zsh
-
-branch=$1
-
-if [ -n $branch ]; then
-  ci $branch
-else
-  echo "Failed to find branch $branch"
-fi

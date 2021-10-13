@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+TAG=$(flow-tags | tail -n 5 | head -n1)
+
+git log master...$TAG --merges | grep -o 'Merge pull request #[^ ]\+' | awk '{print $4}' 

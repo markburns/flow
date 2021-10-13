@@ -1,24 +1,25 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # usage
 # flow-jira-request VERB <url_path> <body>
 def fetch(verb, url_path, *httpie_params)
-  command = "http --auth=#{ENV['JIRA_USERNAME']}:#{ENV['JIRA_TOKEN']} #{verb} https://#{ENV['JIRA_SUBDOMAIN']}.atlassian.net/#{url_path} #{httpie_params.join(" ")}"
+  command = "http --auth=#{ENV['JIRA_USERNAME']}:#{ENV['JIRA_TOKEN']} #{verb} https://#{ENV['JIRA_SUBDOMAIN']}.atlassian.net/#{url_path} #{httpie_params.join(' ')}"
 
   `#{command}`
 end
 
-verb=ARGV[0]
-url_path=ARGV[1]
+verb = ARGV[0]
+url_path = ARGV[1]
 result = fetch(verb, url_path, *ARGV[2..-1])
 
 # JIRA responses include new lines and other control characters
 # and jq doesn't like that
 
-CONTROL_CHARACTERS = ("\x00".."\x1f").to_a.join("|")
-REGEX= /#{CONTROL_CHARACTERS}/
+CONTROL_CHARACTERS = ("\x00".."\x1f").to_a.join('|')
+REGEX = /#{CONTROL_CHARACTERS}/.freeze
 
-result.force_encoding("utf-8")
-result.gsub!(REGEX, " ")
+result.force_encoding('utf-8')
+result.gsub!(REGEX, ' ')
 
-puts result if result.length > 0
+puts result unless result.empty?
