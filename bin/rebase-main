@@ -1,0 +1,2 @@
+#!/usr/bin/env zsh
+git checkout $(base-branch) && git checkout - && git rebase $(base-branch)
